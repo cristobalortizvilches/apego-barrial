@@ -5,3 +5,12 @@ date: "11-07-2020"
 output: html_document
 ---
 Abstract 
+```{r}
+install.packages("usethis")
+
+library(usethis)
+use_git_config(user.name = "Cristóbal Ortiz Vilches", user.email = "cristobal.ortiz.v@ug.uchile.cl")
+
+#usethis::use_git_config(scope = "user")
+```
+
