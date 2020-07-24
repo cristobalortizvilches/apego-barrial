@@ -4,6 +4,8 @@ author: "Cristóbal Ortiz y Valentina Vásquez"
 date: "11-07-2020"
 output: html_document
 ---
-Abstract 
+Resumen:
+
+
 
 

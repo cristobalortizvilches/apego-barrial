@@ -1,6 +1,121 @@
 ---
-title: "Analisis de Datos"
+title: "Código de Análisis de Datos"
 output: html_document
 ---
+```{r}
+pacman::p_load(ggplot2, #gráficos
+               lme4, #multinivel
+               texreg, #tabla de regresión
+               sjmisc,
+               dplyr,
+               sjPlot,
+               jtools) 
+```
 
-Prueba de sonido
+```{r Cargar base de datos procesada, eval=FALSE, include=FALSE}
+remove(list = ls())
+getwd()
+load("../1_input/data/procesada/elsoc_barrio.RData")
+names(elsoc_barrio)
+```
+
+```{r Gráficos para la dependiente: Sentido de Pertenencia, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+bar_sp=ggplot(elsoc_barrio, aes(reorder(to_label(comuna), -sentido_pertenencia),sentido_pertenencia))
+bar_sp + geom_bar(stat = "summary") + 
+  coord_flip() +
+  theme(axis.text=element_text(size=5),
+        axis.title=element_text(size=10,face="bold")) + 
+  labs(x="Comuna", y="Promedio de Sentido de Pertenencia al Barrio por Comuna")
+```
+```{r echo=FALSE}
+box_spb= ggplot(elsoc_barrio, aes(reorder(to_label(comuna), -sentido_pertenencia),sentido_pertenencia)) 
+box_spb + geom_boxplot() +  
+  coord_flip() + 
+  theme(axis.text=element_text(size=5),
+        axis.title=element_text(size=10,face="bold")) + 
+  labs(x="Comuna", y="Promedio de Sentido de Pertenencia al Barrio por Comuna")
+```
+```{r Scatter SPB y Reputación por comuna}
+names(elsoc_barrio)
+comuna_scat <- elsoc_barrio %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,puntaje_violencia,servicios_publicos) %>% summarise_all(mean) 
+
+plot_scatter(comuna_scat,rep_barrial,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Reputación Barrial agrupados por Comuna",
+            axis.titles = c("Promedio de Reputación Barrial por Comuna","Promedio de Sentido de pertenencia por Comuna"))
+```
+
+```{r}
+plot_scatter(comuna_scat,puntaje_violencia,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Puntaje de Violencia agrupados por Comuna",
+            axis.titles = c("Promedio de Puntaje de Violencia por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+```
+
+```{r}
+plot_scatter(comuna_scat,servicios_publicos,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Acceso a Servicios Públicos agrupados por Comuna",
+            axis.titles = c("Promedio Acceso a Servicios Públicos por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+```
+```{r Modelos de Regresión Multivariada (coeficientes estadarizados), echo=FALSE}
+reg1=lm(sentido_pertenencia ~ conflicto_micro, data=elsoc_barrio)
+reg2=lm(sentido_pertenencia ~ conflicto_meso + conflicto_micro, data=elsoc_barrio)
+reg3=lm(sentido_pertenencia ~ calidad_rrss + conflicto_meso + conflicto_micro, data=elsoc_barrio)
+reg4=lm(sentido_pertenencia ~ rep_barrial + calidad_rrss + conflicto_meso + conflicto_micro, data=elsoc_barrio)
+reg5=lm(sentido_pertenencia ~ satisf_barrial + rep_barrial + calidad_rrss + conflicto_meso + conflicto_micro, data=elsoc_barrio)
+#reg6=lm(sentido_pertenencia ~ + calidad_viv + tam_viv + satisf_barrial + rep_barrial + calidad_rrss + conflicto_meso + conflicto_micro, data=elsoc_barrio)
+
+stargazer(reg5, type = "text")
+
+#estandarización de coeficientes
+#export_summs(reg1,reg2,reg3,reg4,reg5,reg6, scale = TRUE ,coefs = c("Intercepto"="(Intercept)","Conflicto Micro"="conflicto_micro","Conflicto Meso"="conflicto_meso", "Calidad de RR.SS."="calidad_rrss", "Reputacion Barrial"="rep_barrial","Satisfacción Barrial"="satisf_barrial","Satisfacción T de Vivienda"="tam_viv","Satisfacción C Vivienda"="calidad_viv"))
+```
+
+```{r Modelos Multinivel, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+#modelo nulo
+model_0 = lmer(sentido_pertenencia ~ 1 + (1 | zona), data = elsoc_barrio)
+0.12/(0.12+0.59) #calculo ICC
+#0.167 -> 17%     #ICC 
+
+#modelo con predictores individuales
+model_1 = lmer(sentido_pertenencia ~ 1 + calidad_rrss + conflicto_micro + conflicto_meso + rep_barrial + satisf_barrial + (1 | zona), data = elsoc_barrio)
+0.03/(0.03+0.34) #calculo ICC
+#0.077 -> 7,7%   #ICC
+
+#modelo con predictores contextuales
+model_2 = lmer(sentido_pertenencia ~ 1 + densidad + tasa_hacinamiento + puntaje_violencia + puntaje_sustraccion + servicios_publicos + nvl_socioecon + expo_hete + rep_barrial_meanbyzona + (1 | zona), data = elsoc_barrio)
+0.02/(0.02+0.59) #calculo ICC
+#0.032 -> 3.2%    #ICC
+
+#modelo con predictores individuales y contextuales (multinivel)
+model_3 = lmer(sentido_pertenencia ~ 1 + conflicto_micro + conflicto_meso + calidad_rrss + rep_barrial + satisf_barrial + densidad + tasa_hacinamiento + puntaje_violencia + puntaje_sustraccion + servicios_publicos + nvl_socioecon + expo_hete + rep_barrial_meanbyzona + (1 | zona), data = elsoc_barrio)
+0.02/(0.02+0.34) #calculo ICC
+#0.051 -> 5,1%    #ICC
+
+screenreg(list(model_0,model_1,model_2,model_3))
+```
+```{r}
+#comparación gráfica de modelos
+htmlreg(list(model_0,model_1,model_2,model_3),
+    custom.model.names = c("Modelo <br> Nulo","Modelo <br> Individual",
+                           "Modelo <br> Contextual", "Modelo <br> Multinivel"),
+    custom.coef.names = c("Intercepto","Conflicto Micro","Conflicto Meso",
+                          "Calidad RR.SS.","Reputación Barrial","Densidad",
+                          "Tasa Hacinamiento","Puntaje Violencia",
+                          "Puntaje Sustracción","Servicios Públicos",
+                          "Nivel Socioeconómico <br> (Proxy Escolaridad)",
+                          "Exposición Heterogeneidad <br> Socioeconómica",
+                          "Reputación Barrial Zonal "),
+    caption="Modelos Multinivel Sentido de Pertenencia al Barrio",
+    caption.above=TRUE,
+    digits=3,
+    doctype = FALSE)
+```
+

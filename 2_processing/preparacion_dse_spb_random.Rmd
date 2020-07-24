@@ -1,0 +1,185 @@
+---
+title: "Preparación de datos con imputación de NA"
+author: "Cristóbal Ortiz y Valentina Vásquez"
+date: "15-07-2020"
+output: html_document
+---
+
+```{r Cargar Base de datos}
+#load("1_input/data/original/ELSOC_W01_V4.00_R.RData") #base de datos ola 1
+load("../1_input/data/original/ELSOC_W01_CIT_v3.20_R.RData") #base de datos ola 1 + CIT
+```
+
+```{r Selección de variables: selección/filtrado/limpieza}
+#selección de variables
+elsoc_mod <- dplyr::select(
+  elsoc_2016a,SEXO=m0_sexo,EDAD=m0_edad, #características socio-demográficas
+  URBE=estrato,COMUNA=comuna.x,DISTRITO=distrito,ZONA=zona,MANZANA=manzana, #identificadores geo-espaciales
+  PERCEP_SEGURIDAD=t10,FREC_PELEAS=t09_01,FREC_ROBOS=t09_02,FREC_TRAFICO=t09_03, #conflicto meso-social
+  FREC_RUIDOS=t11_01,FREC_MASCOT=t11_02,FREC_AMENAZAS=t11_03,FREC_BASURA=t11_04, #conflicto micro social
+  AMISTAD=t03_01,SOCIABILIDAD=t03_02,CORDIALIDAD=t03_03,COLABORACION=t03_04, #sociabilidad
+  BARRIO_IDEAL=t02_01,INTEGRADO_BARRIO=t02_02,IDENTIFICADO_BARRIO=t02_03,PERTENENCIA_BARRIO=t02_04,CONFIANZA_VECINOS=t01, #spb
+  SEGURIDAD=t06_01,CONECT=t06_02,AREASVR=t06_03,LIMPIEZA=t06_04,PROX_TRAB=t06_05,PROX_COL=t06_06,PROX_COM=t06_07,PROX_FAM=t06_08,
+  TAMANO_VIV=t07_01,CALIDAD_VIV=t07_02,
+  PARTICIPACION=c12_01,
+  AREAS_VERDES=acverzon,COLEGIOS=acedzon,SERVICIOS_PUBLICOS=accszon,CALIDAD_AMBIENTAL=ambzon, #accesibilidad
+  REPUTACION_BARRIAL=t08,DENSIDAD_BARRIAL=denszon,SCORE_VIOLENCIA=dviolzon,SCORE_SUSTRACCION=drobozon,
+  HACINAMIENTO=hacinzon,NVIVIENDAS=nvivzon,DIVERSIDAD_CREENCIAS=mixrezon,NVLSOEC_ESCO=nivedzon,EXPO_HETE=sdedzon) #conflicto macro
+
+#filtramos sólo para el conglomerado urbano de Santiago
+elsoc_mod <- dplyr::filter(elsoc_mod, URBE < 2)
+
+#convertimos no sabe/no responde a NA
+elsoc_mod[elsoc_mod == -888] <- NA
+elsoc_mod[elsoc_mod == -999] <- NA
+
+view(dfSummary(elsoc_mod, headings=FALSE))
+
+```
+
+```{r Imputación NA's}
+#reemplazo de NA's por número extraído de muestreo aleatorio ¿desde que N es bueno hacer este proceso?
+#técnica para imputar valores aleatorios extraídos de una MAS de los datos que son !NA (sivre para categóricas y cuantitativas)
+
+rand.impute <- function(x) { #x es un vector de datos (o el mismo df) que puede contener NA
+  missing <- is.na(x)  # missing contiene un vector de valores T/F dependiendo del NA de x
+  n.missing <- sum(missing)  #n.missing contiene cuantos valores son NA dentro de x
+  x.obs <- x[!missing] #x.obs son los valores conocidos que tienen dato diferente de NA en x
+  imputed <- x #por defecto, devolveré lo mismo que había entrado por parámetro
+  imputed[missing] <- sample(x.obs, n.missing, replace = TRUE) #en los valores que faltaban, los reemplazamos por una muestra de los que si conocemos (MAS)
+  return (imputed)  
+}
+
+random.impute.data.frame <- function(dataframe, cols){
+  names <- names(dataframe)
+  for(col in cols){
+    name <- paste(names[col], "MAS", sep = ".")
+    dataframe[name] = rand.impute(dataframe[,col])
+  }
+  dataframe
+}
+
+#genero una nueva df que contiene nuevas columnas 
+#en las cuales se incluyen valores aleatorios en lo que antes era NA
+elsoc_random <- random.impute.data.frame(elsoc_mod,cols = c(1:48)) 
+
+elsoc_random[1:48] <- list(NULL) #elimino columnas anteriores que incluían NA's
+
+view(dfSummary(elsoc_random, headings=FALSE)) #visualización de variables 
+
+```
+
+```{r Procesamiento de Variables}
+
+##----índice de "Conflictividad Meso-Social"
+
+#subíndice de "Experiencias de Criminalidad en el Barrio"
+EXP_CRIMINALIDAD.MAS <-((elsoc_random$FREC_PELEAS.MAS + elsoc_random$FREC_ROBOS.MAS + elsoc_random$FREC_TRAFICO.MAS)/3)
+elsoc_random$EXP_CRIMINALIDAD.MAS = EXP_CRIMINALIDAD.MAS #añadimos el subíndice a la base de datos
+
+#subíndice de "(in)seguridad en el Barrio" recodificamos para invertir los valores de respuesta de modo que mida inseguridad 
+elsoc_random <- mutate(elsoc_random,PERCEPCION_SEGURIDAD.MAS = car::recode(elsoc_random$PERCEP_SEGURIDAD.MAS,"1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
+
+#finalmente construimos el índice de "Conflictividad Meso-Social"
+CONFLIC_MESO <-((elsoc_random$EXP_CRIMINALIDAD.MAS + elsoc_random$PERCEP_SEGURIDAD.MAS)/4)
+elsoc_random$CONFLIC_MESO=CONFLIC_MESO #lo añadimos al dataframe
+
+##----índice de "Conflictividad Micro-social"
+CONFLIC_MICRO <-((elsoc_random$FREC_RUIDOS.MAS + elsoc_random$FREC_MASCOT.MAS + elsoc_random$FREC_AMENAZAS.MAS + elsoc_random$FREC_BASURA.MAS)/4)
+elsoc_random$CONFLIC_MICRO = CONFLIC_MICRO #lo añadimos al dataframe
+
+##----índice de "Calidad de relaciones sociales en el barrio" 
+CALIDAD_RSBARRIO <- ((elsoc_random$AMISTAD.MAS + elsoc_random$SOCIABILIDAD.MAS + elsoc_random$CORDIALIDAD.MAS + elsoc_random$COLABORACION.MAS)/4)
+elsoc_random$CALIDAD_RSBARRIO=CALIDAD_RSBARRIO #añadimos una nueva columna "COHESION" al dataframe
+
+##----construimos un índice de "Sentido de pertenencia"
+SENTIDO_PERTENENCIA <- ((elsoc_random$BARRIO_IDEAL.MAS + elsoc_random$INTEGRADO_BARRIO.MAS + elsoc_random$IDENTIFICADO_BARRIO.MAS + elsoc_random$PERTENENCIA_BARRIO.MAS + elsoc_random$CONFIANZA_VECINOS.MAS)/5)
+elsoc_random$SENTIDO_PERTENENCIA=SENTIDO_PERTENENCIA #añadimos una nueva columna "COHESION_BARRIAL" al dataframe
+
+##----índice de satisfacción barrial
+SATISF_BARRIAL <- ((elsoc_random$SEGURIDAD.MAS + elsoc_random$CONECT.MAS + elsoc_random$AREASVR.MAS + elsoc_random$LIMPIEZA.MAS + elsoc_random$PROX_TRAB.MAS + elsoc_random$PROX_COL.MAS + elsoc_random$PROX_COM.MAS + elsoc_random$PROX_FAM.MAS)/8)
+elsoc_random$SATISF_BARRIAL=SATISF_BARRIAL
+
+##----Validación de índices
+tabla_indice_meso <- dplyr::select(elsoc_random,PERCEPCION_SEGURIDAD.MAS,FREC_PELEAS.MAS,FREC_ROBOS.MAS,FREC_TRAFICO.MAS)
+cronbach(tabla_indice_meso) #0.76
+
+tabla_indice_micro <- dplyr::select(elsoc_random,FREC_RUIDOS.MAS,FREC_MASCOT.MAS,FREC_AMENAZAS.MAS,FREC_BASURA.MAS)
+cronbach(tabla_indice_micro) #0.67
+
+tabla_indice_crrss <- dplyr::select(elsoc_random,AMISTAD.MAS,SOCIABILIDAD.MAS,CORDIALIDAD.MAS,COLABORACION.MAS)
+cronbach(tabla_indice_crrss) #0.81
+
+tabla_indice_spb<- dplyr::select(elsoc_random,BARRIO_IDEAL.MAS,INTEGRADO_BARRIO.MAS,IDENTIFICADO_BARRIO.MAS,PERTENENCIA_BARRIO.MAS,CONFIANZA_VECINOS.MAS)
+cronbach(tabla_indice_spb) #0.87
+
+tabla_indice_stfb<- dplyr::select(elsoc_random,SEGURIDAD.MAS,CONECT.MAS,AREASVR.MAS,PROX_TRAB.MAS,PROX_COL.MAS,PROX_COM.MAS,PROX_FAM.MAS)
+cronbach(tabla_indice_stfb)
+
+##----Reescalamiento variable de densidad para dejarla en escala de 0 a 1
+
+elsoc_random$DENSIDAD.RS <- rescale(elsoc_random$DENSIDAD_BARRIAL.MAS)
+
+##----Reescalamiento de variable nivel socioeconómico medido por escolaridad
+
+elsoc_random$NVLSOEC.RS <- rescale(elsoc_random$NVLSOEC_ESCO.MAS)
+
+##----Generamos la tasa de hacinamiento
+TASA_HACIN <-(elsoc_random$HACINAMIENTO.MAS/elsoc_random$NVIVIENDAS.MAS)
+elsoc_random$TASA_HACIN=TASA_HACIN #añadimos una nueva columna
+
+```
+
+```{r Base de datos procesada final}
+
+##----creamos data frame con todos los datos necesarios para analisis multinivel
+elsoc_barrio <- dplyr::select(elsoc_random,comuna=COMUNA.MAS,zona=ZONA.MAS,distrito=DISTRITO.MAS,
+                              sentido_pertenencia=SENTIDO_PERTENENCIA,conflicto_meso=CONFLIC_MESO,conflicto_micro=CONFLIC_MICRO,calidad_rrss=CALIDAD_RSBARRIO, rep_barrial=REPUTACION_BARRIAL.MAS,satisf_barrial=SATISF_BARRIAL,
+                              servicios_publicos=SERVICIOS_PUBLICOS.MAS,densidad=DENSIDAD.RS, puntaje_violencia=SCORE_VIOLENCIA.MAS, puntaje_sustraccion=SCORE_SUSTRACCION.MAS, 
+                              tasa_hacinamiento=TASA_HACIN, nvl_socioecon=NVLSOEC.RS, expo_hete=EXPO_HETE.MAS)
+
+view(dfSummary(elsoc_barrio, headings=FALSE)) 
+
+#calculamos una nueva variable que será el promedio de la variable "Sentido de Pertenencia" agrupada por zona
+elsoc_barrio <- elsoc_barrio %>%
+  group_by(zona) %>%
+  mutate(sentido_pertenencia_meanbyzona = mean(sentido_pertenencia))
+
+#lo mismo agrupado por comuna
+elsoc_barrio <- elsoc_barrio %>%
+  group_by(comuna) %>%
+  mutate(sentido_pertenencia_meanbycomuna = mean(sentido_pertenencia))
+
+#calculamos una nueva variable que será el promedio de la variable "Reputación Barrial" agrupada por zona
+elsoc_barrio <- elsoc_barrio%>%
+  group_by(zona) %>%
+  mutate(rep_barrial_meanbyzona = mean(rep_barrial))
+
+#renombramos las comunas 
+elsoc_barrio$comuna <- as.factor(elsoc_barrio$comuna)
+elsoc_barrio$comuna <- factor(elsoc_barrio$comuna,labels = c("Santiago", "Cerrillos", "Cerro Navia", "Conchali", "El Bosque", "Estacion Central", "Huechuraba","Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipu", "Nnunnoa", "Pedro Aguirre Cerda", "Pennialolen", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquin", "San Miguel", "San Ramon", "Vitacura", "Puente Alto", "San Bernardo", "Padre Hurtado"))
+
+#Promedio por comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(meanage = mean(sentido_pertenencia))
+#Desviación estándarpor comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(sdage = sd(sentido_pertenencia,))
+#Tamaño por comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(count = length(comuna))
+
+#base con descriptivos por comuna 
+comunas <- elsoc_barrio %>% group_by(Comuna=to_label(comuna)) %>% summarise("Promedio Sentido de Pertenencia"=mean(meanage), "SD Sentido de Pertenencia"=mean(sdage), N=mean(count)) #%>% print(n = nrow(.))
+comunas <- as.data.frame(comunas)
+View(comunas)
+
+elsoc_barrio[20:22] <- list(NULL) #elimino columnas anteriores que incluían NA's
+
+#Filtrando las comunas con N bajo
+elsoc_barrio <- dplyr::filter(elsoc_barrio, comuna!="Vitacura")
+
+#view(dfSummary(elsoc_barrio, headings=FALSE)) 
+
+getwd()
+#guardamos base de datos procesada con el fin de hacerla disponible para el análisis 
+save(elsoc_barrio,file = "../1_input/data/procesada/elsoc_barrio.RData")
+```
+
