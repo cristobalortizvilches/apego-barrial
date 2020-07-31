@@ -182,4 +182,8 @@ getwd()
 #guardamos base de datos procesada con el fin de hacerla disponible para el análisis 
 save(elsoc_barrio,file = "../1_input/data/procesada/elsoc_barrio.RData")
 ```
+```{r}
+sessionInfo()
+```
+
 

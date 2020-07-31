@@ -7,5 +7,3 @@ output: html_document
 Resumen:
 
 
-
-
