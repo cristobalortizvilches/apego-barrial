@@ -10,7 +10,8 @@ pacman::p_load(ggplot2, #gráficos
                dplyr,
                sjPlot,
                jtools,
-               stargazer) 
+               stargazer,
+               webshot) 
 ```
 
 ```{r Cargar base de datos procesada, include=FALSE}
@@ -102,13 +103,26 @@ reg3=lm(sentido_pertenencia ~ econ_urb + rep_barrial + exp_crimen + sentimiento_
 reg4=lm(sentido_pertenencia ~ lazos + participacion + confianza + calidad_rrss + econ_urb + rep_barrial + exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add dimensiones de cohesión
 reg5=lm(sentido_pertenencia ~ satisf_barrial + lazos + participacion + confianza + calidad_rrss + econ_urb + rep_barrial + exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add satisfacción residencial
 
-stargazer(reg1,reg2,reg3,reg4,reg5, type = "text")
+#stargazer(reg1,reg2,reg3,reg4,reg5, type = "text")
 
 #reg6=lm(sentido_pertenencia ~ satisf_barrial + confianza + calidad_rrss + econ_urb + rep_barrial + sentimiento_inseguridad, data=elsoc_barrio) 
 #stargazer(reg5,reg6,type = "text") #aquí comparo modelo 5 con modelo 6 que tiene solo predictores significativos 
 
 #estandarización de coeficientes
-export_summs(reg1,reg2,reg3,reg4,reg5, scale = TRUE ,coefs = c("Intercepto"="(Intercept)","Conflicto Micro"="conflicto_micro","Sentimiento Inseguridad"="sentimiento_inseguridad","Experiencias de Crimen"="exp_crimen","Reputacion Barrial"="rep_barrial","Economia Urbana"="econ_urb","Calidad de RR.SS."="calidad_rrss","Confianza en Vecinos"="confianza","Participacion Activa"="participacion3","Participacion Inactiva"="participacion2","Lazos sociales"="lazos","Satisfacción Barrial"="satisf_barrial"))
+
+modelos_nvl1 <- 
+  export_summs(reg1,reg2,reg3,reg4,reg5, scale = TRUE ,
+               coefs = c("Intercepto"="(Intercept)","Conflicto
+                         Micro"="conflicto_micro","Sentimiento
+                         Inseguridad"="sentimiento_inseguridad","Experiencias de
+                         Crimen"="exp_crimen","Reputacion Barrial"="rep_barrial","Economia
+                         Urbana"="econ_urb","Calidad de RR.SS."="calidad_rrss","Confianza en
+                         Vecinos"="confianza","Participacion
+                         Activa"="participacion3","Participacion Inactiva"="participacion2","Lazos
+                         sociales"="lazos","Satisfacción Barrial"="satisf_barrial"),
+                         to.file = "html",file.name = "modelos_nvl1.html")
+
+webshot("modelos_nvl1.html",file = "../3_output/tablas/modelos_nvl1.png")
 ```
 
 ```{r Modelos Multinivel, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
