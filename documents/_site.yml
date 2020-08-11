@@ -3,9 +3,9 @@ output_dir: "."
 navbar:
   title: "Desigualdad Socio-espacial y Sentido de Pertenencia al Barrio"
   right:
-    - text: "Paper"
+    - text: "Artículo"
       href: "paper_dse_spb.html"
-    - text: "Abstract Extenso"
+    - text: "Resumen Extenso"
       href: "resumen_expandido_dse_spb.pdf"
     - text: ""
       icon: fa-github fa-lg
