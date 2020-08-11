@@ -9,10 +9,11 @@ documentclass: article
 fontsize: 12pt
 linkcolor: blue
 bibliography:
-  - '1_input/bib/dse_spb.bib'
-csl: '1_input/bib/apa.csl'
+  - '../1_input/bib/dse_spb.bib'
+csl: '../1_input/bib/apa.csl'
 link-citations: yes
 ---
+<div style="text-align: justify">
 # Resumen expandido
 
 El desarrollo urbano del Área Metropolitana de Santiago (AMS) ha sido moldeado por el mercado inmobiliario y el rol subsidiario del Estado, lo cual tiene por consecuencias una alta segregación residencial [@pnud_desiguales_2017; @rasse_segregacion_2016], que resulta acentuada y perjudicial en conjuntos de vivienda social [@sabatini_segregacion_2002], y una marcada distribución geográfica de la riqueza [@mendez_ciudad_2017], lo que contribuye a diversas manifestaciones de conflicto urbano. En el AMS, el conflicto adquiere la forma de desigualdades socio-espaciales que afectan la cohesión barrial [@mendez_ciudad_2017], dificultando la acción colectiva [@ozler_concertacion_2011], provocando desconfianza entre vecinos [@brain_valenzuela_vivir_2010] e incluso negando la comunidad en barrios de alta segregación de grupos empobrecidos [@rodriguez_con_2015]. La urbanización neoliberal configura dos límites urbanos opuestos: condominios altos y medios en donde la identidad se consagra mediante el mercado, y villas de vivienda social, en donde la identidad social es un proyecto disputado, con un “nosotros” fuertemente debilitado [@marquez_identidad_2003]. 
@@ -58,3 +59,4 @@ Palabras clave: *sentido de pertenencia, cohesión barrial, desigualdad socio-es
  
 # Referencias del resumen
 
+<div/>
