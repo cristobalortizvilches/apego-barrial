@@ -182,4 +182,5 @@ La cohesión barrial aumenta en la medida que se percibe mejor calidad de las re
 
 La cohesión barrial aumenta en la medida que se percibe mejor reputación barrial, por lo que la cuarta hipótesis se corrobora.  Existe capacidad explicativa por parte de esta variable, no obstante es baja.
 
+
 <div/>
