@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Cristóbal Ortiz" />
+<meta name="author" content="Valentina Vásquez" />
+
+
+<title>El efecto de la Desigualdad Socio-espacial sobre el Sentido de Pertenencia a Escala Barrial: el caso del Área Metropolitana de Santiago de Chile</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Desigualdad Socio-espacial y Sentido de Pertenencia al Barrio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="paper_dse_spb.html">Paper</a>
+</li>
+<li>
+  <a href="resumen_expandido_dse_spb.pdf">Abstract Extenso</a>
+</li>
+<li>
+  <a href="https://github.com/cristobalortizvilches/dse_spb">
+    <span class="fa fa-github fa-lg"></span>
+     
+    
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">El efecto de la Desigualdad Socio-espacial sobre el Sentido de Pertenencia a Escala Barrial: el caso del Área Metropolitana de Santiago de Chile</h1>
+<h4 class="author">Cristóbal Ortiz<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></h4>
+<h4 class="author">Valentina Vásquez<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></h4>
+
+</div>
+
+
+<div id="resumen-expandido" class="section level1">
+<h1>Resumen expandido</h1>
+<p>El desarrollo urbano del Área Metropolitana de Santiago (AMS) ha sido moldeado por el mercado inmobiliario y el rol subsidiario del Estado, lo cual tiene por consecuencias una alta segregación residencial <span class="citation">(PNUD et al., <a href="#ref-pnud_desiguales_2017" role="doc-biblioref">2017</a>; Rasse, <a href="#ref-rasse_segregacion_2016" role="doc-biblioref">2016</a>)</span>, que resulta acentuada y perjudicial en conjuntos de vivienda social <span class="citation">(Sabatini, <a href="#ref-sabatini_segregacion_2002" role="doc-biblioref">2002</a>)</span>, y una marcada distribución geográfica de la riqueza <span class="citation">(Méndez et al., <a href="#ref-mendez_ciudad_2017" role="doc-biblioref">2017</a>)</span>, lo que contribuye a diversas manifestaciones de conflicto urbano. En el AMS, el conflicto adquiere la forma de desigualdades socio-espaciales que afectan la cohesión barrial <span class="citation">(Méndez et al., <a href="#ref-mendez_ciudad_2017" role="doc-biblioref">2017</a>)</span>, dificultando la acción colectiva <span class="citation">(Özler, <a href="#ref-ozler_concertacion_2011" role="doc-biblioref">2011</a>)</span>, provocando desconfianza entre vecinos <span class="citation">(Brain Valenzuela et al., <a href="#ref-brain_valenzuela_vivir_2010" role="doc-biblioref">2010</a>)</span> e incluso negando la comunidad en barrios de alta segregación de grupos empobrecidos <span class="citation">(Rodríguez et al., <a href="#ref-rodriguez_con_2015" role="doc-biblioref">2015</a>)</span>. La urbanización neoliberal configura dos límites urbanos opuestos: condominios altos y medios en donde la identidad se consagra mediante el mercado, y villas de vivienda social, en donde la identidad social es un proyecto disputado, con un “nosotros” fuertemente debilitado <span class="citation">(Márquez, <a href="#ref-marquez_identidad_2003" role="doc-biblioref">2003</a>)</span>.</p>
+<p>No obstante, otros estudios concluyen surgimiento de cohesión frente a conflictos tales como desplazamiento territorial en barrios de clase media y baja <span class="citation">(Angelcos &amp; Méndez, <a href="#ref-angelcos_struggles_2016" role="doc-biblioref">2016</a>)</span> y en barrios patrimonializados <span class="citation">(Uribe, <a href="#ref-uribe_patrimonializacion_2014" role="doc-biblioref">2014</a>)</span>, demostrando que la conflictividad urbana no genera mecánicamente falta de cohesión, sino que también la puede desencadenar según la capacidad de acción de los agentes. Lo anterior evidencia el carácter no determinista de la conformación de la conciencia de los habitantes urbanos, ya que la relación entre ciudad -como objeto- y la urbanización -como proceso social- es dialéctica y dinámica <span class="citation">(Harvey, <a href="#ref-harvey_espacios_2014" role="doc-biblioref">2014</a>)</span>.</p>
+<p>Considerando estos antecedentes, la presente investigación busca contribuir desde un enfoque socio-espacial a la discusión sobre los condicionantes de la cohesión barrial en ciudades neoliberales. Se aborda una dimensión particular de la cohesión: el sentido de pertenencia al barrio, el cual da cuenta del vínculo simbólico y emocional entre la persona y su comunidad barrial <span class="citation">(Méndez &amp; Otero, <a href="#ref-mendez_neighbourhood_2018" role="doc-biblioref">2018</a>)</span>. De esta manera se busca responder ¿en qué medida las características de la estructura socio-urbana del AMS, subdividida en zonas censales, afectan el sentido de pertenencia a escala barrial percibido por habitantes del AMS de Chile? Teniendo como hipótesis que la estructura socio-urbana del AMS, caracterizada por la desigualdad socio-espacial, influye de manera diferenciada en los distintos niveles de sentido de pertenencia al barrio; específicamente, se busca testear 3 grupos de hipótesis derivadas de la literatura:</p>
+<ol style="list-style-type: decimal">
+<li>Determinantes de nivel individual:
+<ul>
+<li><p>La calidad de las relaciones sociales afecta positivamente el sentido de pertenencia.</p></li>
+<li><p>La conflictividad a nivel micro-social afecta negativamente el sentido de pertenencia.</p></li>
+<li><p>La conflictividad a nivel meso-social afecta negativamente el sentido de pertenencia.</p></li>
+<li><p>La estigmatización territorial afecta negativamente el sentido de pertenencia.</p></li>
+</ul></li>
+<li>Determinantes de nivel contextual:
+<ul>
+<li><p>La segregación residencial en conjuntos habitacionales de alto nivel socioeconómico afecta positivamente el sentido de pertenencia.</p></li>
+<li><p>La segregación residencial en conjuntos habitacionales de bajo nivel socioeconómico afecta negativamente el sentido de pertenencia.</p></li>
+<li><p>Accesibilidad a servicios públicos y privados afecta positivamente el sentido de pertenencia.</p></li>
+<li><p>La densidad poblacional afecta negativamente el sentido de pertenencia.</p></li>
+<li><p>La criminalidad afecta negativamente el sentido de pertenencia.</p></li>
+</ul></li>
+<li>Interacciones entre nivel individual y contextual
+<ul>
+<li><p>El efecto de la calidad de las relaciones sociales sobre el sentido de pertenencia está mediado por el contexto territorial; en donde el puntaje de violencia tiene un efecto negativo y el acceso a servicios públicos y la reputación barrial tienen un efecto positivo en la relación.</p></li>
+<li><p>El efecto de la conflictividad micro-social sobre el sentido de pertenencia está mediado por el contexto territorial, en donde la densidad poblacional y el acceso a servicios públicos tienen un efecto negativo en la relación.</p></li>
+<li><p>El efecto de la conflictividad meso-social sobre el sentido de pertenencia está mediado por el contexto territorial, en donde el puntaje de violencia tiene un efecto positivo en la relación.</p></li>
+<li><p>El efecto de la estigmatización territorial sobre el sentido de pertenencia está mediado por el contexto territorial, en donde el puntaje de violencia tiene un efecto negativo en la relación.</p></li>
+</ul></li>
+</ol>
+<p>Para testear estas hipótesis realizamos un análisis multinivel, modelando el efecto del contexto territorial del AMS, que en este caso corresponde a indicadores de desigualdad socio-espacial agregados por zona censal, sobre el índice de sentido de pertenencia al barrio percibido por los habitantes del AMS. De este análisis se identifican tanto variables individuales como contextuales que afectan y explican de manera diferenciada el sentido de pertenencia al barrio, todas la cuales se construyen en base a los datos del Estudio Longitudinal Social de Chile <span class="citation">(ELSOC Survey, <a href="#ref-elsoc_survey_estudio_2020" role="doc-biblioref">2020</a>)</span>, cuya muestra en la primera ola incluye 2927 casos a nivel nacional, 720 para el AMS y alrededor de 180 zonas censales en su interior.</p>
+<p>Los resultados indican que, primero, se logra un modelo de nivel individual que explica el sentido de pertenencia (bondad de ajuste del 47%), cuyos principales predictores son la calidad de las relaciones sociales y la satisfacción residencial. Segundo, se demuestra que el contexto sí influye en la cohesión, pues al agrupar por zonas censales, el 17% de la variación del sentido de pertenencia se atribuye a la zona censal, variación que es explicada en un 82% por el modelo multinivel elaborado, en el cual destaca la densidad poblacional, el puntaje de violencia urbana y la accesibilidad a servicios. No se halla un efecto significativo de la segregación residencial sobre el sentido de pertenencia, sin embargo, este resultado será reevaluado con nuevas variables de segregación en futuros informes. Finalmente, la interacción entre niveles tiene dos resultados importantes: el acceso a servicios públicos modera negativamente el efecto de la calidad de las relaciones sociales sobre el sentido de pertenencia, esto es, ante un mal acceso a servicios públicos la calidad de las relaciones se vuelve más importante para explicar sentido de pertenencia; y, el puntaje de violencia modera negativamente el efecto de la reputación barrial sobre el sentido de pertenencia, lo que indica que en zonas afectadas por la violencia, la mala reputación barrial da cuenta de un mayor sentido de pertenencia.</p>
+<p>Palabras clave: <em>sentido de pertenencia, cohesión barrial, desigualdad socio-espacial, conflicto urbano, desarrollo urbano</em></p>
+</div>
+<div id="referencias-del-resumen" class="section level1 unnumbered">
+<h1>Referencias del resumen</h1>
+<div id="refs" class="references">
+<div id="ref-angelcos_struggles_2016">
+<p>Angelcos, N., &amp; Méndez, M. L. (2016). Struggles against Territorial Disqualification: Mobilization for Dignified Housing and Defense of Heritage in Santiago: <em>Latin American Perspectives</em>. <a href="https://doi.org/10.1177/0094582X16682757">https://doi.org/10.1177/0094582X16682757</a></p>
+</div>
+<div id="ref-brain_valenzuela_vivir_2010">
+<p>Brain Valenzuela, I., Prieto Suárez, J. J., &amp; Sabatini Downey, F. (2010). Vivir en Campamentos: Camino Hacia la vivienda formal o estrategia de localización para enfrentar la vulnerabilidad? <em>EURE (Santiago)</em>, <em>36</em>(109), 111–141. <a href="https://doi.org/10.4067/S0250-71612010000300005">https://doi.org/10.4067/S0250-71612010000300005</a></p>
+</div>
+<div id="ref-elsoc_survey_estudio_2020">
+<p>ELSOC Survey, T. (2020). <em>Estudio Longitudinal Social de Chile 2016</em>. Harvard Dataverse. <a href="https://doi.org/10.7910/DVN/0KIRBJ">https://doi.org/10.7910/DVN/0KIRBJ</a></p>
+</div>
+<div id="ref-harvey_espacios_2014">
+<p>Harvey, D. (2014). <em>Espacios del capital: hacia una geografía crítica</em>. Akal Ediciones, S.A.</p>
+</div>
+<div id="ref-marquez_identidad_2003">
+<p>Márquez, F. (2003). Identidad y fronteras urbanas en Santiago de Chile. <em>Psicologia Em Revista</em>, <em>10</em>(14), 35–51.</p>
+</div>
+<div id="ref-mendez_neighbourhood_2018">
+<p>Méndez, M. L., &amp; Otero, G. (2018). Neighbourhood conflicts, socio-spatial inequalities, and residential stigmatisation in Santiago, Chile. <em>Cities</em>, <em>74</em>, 75–82. <a href="https://doi.org/10.1016/j.cities.2017.11.005">https://doi.org/10.1016/j.cities.2017.11.005</a></p>
+</div>
+<div id="ref-mendez_ciudad_2017">
+<p>Méndez, M., Otero, G., López, E., Link, F., &amp; Castillo, V. (2017). Ciudad, conflicto y cohesión social: Sobre la desigualdad socio-espacial en el Chile actual. <em>Santiago, Chile: COES. Recuperado de Https://Www. Coes. Cl/Wp-Content/Uploads/2017/08</em>, <em>10</em>.</p>
+</div>
+<div id="ref-ozler_concertacion_2011">
+<p>Özler, Ş. İ. (2011). The Concertación and Homelessness in Chile: Market-based Housing Policies and Limited Popular Participation. <em>Latin American Perspectives</em>. <a href="https://doi.org/10.1177/0094582X10397917">https://doi.org/10.1177/0094582X10397917</a></p>
+</div>
+<div id="ref-pnud_desiguales_2017">
+<p>PNUD, Palet, A., &amp; Aguirre, P. de (Eds.). (2017). <em>Desiguales: Orígenes, cambios y desafíos de la brecha social en Chile</em>. PNUD : Uqbar Editores.</p>
+</div>
+<div id="ref-rasse_segregacion_2016">
+<p>Rasse, A. (2016). Segregación residencial socioeconómica y desigualdad en las ciudades chilenas. <em>Serie Documentos de Trabajo Pnud-Desigualdad</em>, <em>2016/04</em>.</p>
+</div>
+<div id="ref-rodriguez_con_2015">
+<p>Rodríguez, A., Rodríguez, P., &amp; Sugranyes, A. (2015). Con subsidio, sin derecho. La situación del derecho a una vivienda adecuada en Chile. <em>Santiago, Chile: SUR</em>.</p>
+</div>
+<div id="ref-sabatini_segregacion_2002">
+<p>Sabatini, F. (2002). La segregación de los pobres en las ciudades: Un tema crítico para Chile. <em>PDF. Disponible Online: Http://Www. Techo. Org/Wpcontent/Uploads/2013/02/CIS</em>, <em>C2</em>.</p>
+</div>
+<div id="ref-uribe_patrimonializacion_2014">
+<p>Uribe, N. (2014). Patrimonialización comunitaria en barrios de Santiago: Los casos de las zonas típicas de Viel y Yungay. <em>Apuntes: Revista de Estudios Sobre Patrimonio Cultural - Journal of Cultural Heritage Studies</em>, <em>27</em>(1), 80–93. <a href="https://doi.org/10.11144/Javeriana.APC27-1.pcbs">https://doi.org/10.11144/Javeriana.APC27-1.pcbs</a></p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Estudiante de sociología Universidad de Chile - <a href="mailto:cristobal.ortiz.v@ug.uchile.cl" class="email">cristobal.ortiz.v@ug.uchile.cl</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Estudiante de sociología Universidad de Chile - <a href="mailto:valentina.vasquez.c@ug.uchile.cl" class="email">valentina.vasquez.c@ug.uchile.cl</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

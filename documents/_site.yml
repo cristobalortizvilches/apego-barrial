@@ -1,0 +1,16 @@
+name: "dse_spb"
+output_dir: "." 
+navbar:
+  title: "Desigualdad Socio-espacial y Sentido de Pertenencia al Barrio"
+  right:
+    - text: "Paper"
+      href: "paper_dse_spb.html"
+    - text: "Abstract Extenso"
+      href: "resumen_expandido_dse_spb.pdf"
+    - text: ""
+      icon: fa-github fa-lg
+      href: https://github.com/cristobalortizvilches/dse_spb
+output:
+  html_document:
+    theme: readable
+    css: 'styles.css'
