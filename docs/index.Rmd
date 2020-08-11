@@ -1,7 +1,7 @@
 ---
 title: "El efecto de la Desigualdad Socio-espacial en el Sentido de Pertenencia al Barrio: el caso del Area Metropolitana de Santiago de Chile"
 author: "Cristóbal Ortiz y Valentina Vásquez"
-date: "10-08-2020"
+date: "11-08-2020"
 output: html_document
 ---
 Este proyecto de investigación es un intento de explicar sistemáticamente el efecto de la desigualdad socioespacial sobre el sentido de pertenencia a nivel de barrio. Para ello, se realiza un análisis multinivel con datos de ELSOC y otras fuentes.
