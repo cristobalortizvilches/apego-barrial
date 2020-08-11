@@ -144,7 +144,7 @@ c)Puntaje de violencia urbana (Catastro Ministerio del Interior 2012), incluye d
 
 El detalle de la operacionalización y medición de las variables se adjunta en la siguiente tabla:
 
-![Tabla de operacionalización. Fuente: elaboración propia en base en base a datos de ELSOC 2016, COES (2017)](../1_input/images/operacionalizacion.png)
+![Tabla de operacionalización. Fuente: elaboración propia en base en base a datos de ELSOC 2016, COES (2017)](https://raw.githubusercontent.com/cristobalortizvilches/dse_spb/master/1_input/images/operacionalizacion.png)
 
 Posteriormente, se evalúan modelos multinivel que incorporan indicadores territoriales e individuales en la explicación de cohesión barrial según zona. Para esto, se construyen cuatro modelos: modelo nulo sin predictores, modelo con predictores de nivel 1, modelo con predictores de nivel contextual y, finalmente, se elabora un modelamiento multinivel que incorpora tanto los predictores individuales como contextuales. Este último se puede apreciar en la siguiente ecuación y diagrama:
 
@@ -153,11 +153,11 @@ $CohesionBarrial_{ij} = γ_{00}+γ_{10}ConfMicro+γ_{20}ConfMeso+γ_{30}CalidadR
 $...+γ_{01}Dens+γ_{02}Viol+γ_{03}Serv+γ_{04}RepBZona+μ_{01}+μ_{02}+μ_{03}+μ_{04}+r_{10}+r_{20}+r_{30}+r_{40}$
 
 
-![Diagrama modelo multinivel Cohesión Barrial. Fuente: elaboración propia ](../1_input/images/diagrama1.jpg)
+![Diagrama modelo multinivel Cohesión Barrial. Fuente: elaboración propia ](https://raw.githubusercontent.com/cristobalortizvilches/dse_spb/master/1_input/images/diagrama1.jpg)
 
 Finalmente, se comparan modelos con pendiente fija y con pendiente aleatoria y, posteriormente, modelos con interacción entre niveles. El siguiente diagrama grafica las interacciones entre niveles que serán analizadas:
 
-![Diagrama modelos de interacción entre niveles. Fuente: elaboración propia ](../1_input/images/diagrama2.jpg)
+![Diagrama modelos de interacción entre niveles. Fuente: elaboración propia ](https://raw.githubusercontent.com/cristobalortizvilches/dse_spb/master/1_input/images/diagrama2.jpg)
 
 # **IV. Análisis y resultados**
 
@@ -167,7 +167,7 @@ El primer modelo de regresión lineal múltiple arroja que existe una relación 
 
 El modelo 3 arroja una relación negativa muy baja y significativa entre conflictos meso-sociales y cohesión, lo mismo ocurre entre conflictos micro sociales y cohesión barrial, no obstante, arroja una relación positiva moderada entre calidad de las relaciones sociales y cohesión barrial con un alto nivel de significancia. Por su parte, la varianza explicada del modelo 3 asciende a 43%, por lo que mejora considerablemente la capacidad explicativa respecto a los dos modelos antes descritos. Finalmente, el modelo 4 incorpora reputación barrial, la que se relaciona positiva y significativamente con la cohesión, alcanzado a explicar el 46% de la varianza.
 
-![Tabla de regresión múltiple para modelos de regresión de nivel 1. Fuente: elaboración propia ](../3_output/tablas/modelos_nvl1.png)
+![Tabla de regresión múltiple para modelos de regresión de nivel 1. Fuente: elaboración propia ](https://raw.githubusercontent.com/cristobalortizvilches/dse_spb/master/3_output/tablas/modelos_nvl1.png)
 
 
 # **V. Discusión de resultados**
