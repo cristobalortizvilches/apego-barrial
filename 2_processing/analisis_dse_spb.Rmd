@@ -32,6 +32,8 @@ barras_spb <-
   labs(x="Comuna", y="Promedio de Sentido de Pertenencia al Barrio por Comuna")
 
 ggsave(barras_spb,filename= "../3_output/graficos/barras_spb.pdf")
+
+barras_spb
 ```
 
 ```{r echo=FALSE}
@@ -45,10 +47,12 @@ boxplot_spb <-
   labs(x="Comuna", y="Promedio de Sentido de Pertenencia al Barrio por Comuna")
 
 ggsave(boxplot_spb,filename= "../3_output/graficos/boxplot_spb.pdf")
+
+boxplot_spb
 ```
 ```{r Scatter SPB y Reputación por comuna}
 names(elsoc_barrio)
-comuna_scat <- elsoc_barrio %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,puntaje_violencia,servicios_publicos,densidad) %>% summarise_all(mean) 
+comuna_scat <- elsoc_barrio %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,puntaje_violencia,servicios_publicos,densidad) %>% summarise_all(mean)
 
 scat_spb_rb <- 
   plot_scatter(comuna_scat,rep_barrial,sentido_pertenencia,
@@ -59,6 +63,8 @@ scat_spb_rb <-
             axis.titles = c("Promedio de Reputación Barrial por Comuna","Promedio de Sentido de Pertenencia al Barrio por Comuna"))
 
 ggsave(scat_spb_rb,filename= "../3_output/graficos/scat_spb_rb.pdf")
+
+scat_spb_rb
 ```
 
 ```{r}
@@ -71,6 +77,8 @@ scat_spb_pv <-
             axis.titles = c("Promedio de Puntaje de Violencia por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
 
 ggsave(scat_spb_pv,filename= "../3_output/graficos/scat_spb_pv.pdf")
+
+scat_spb_pv
 ```
 
 ```{r}
@@ -83,6 +91,8 @@ scat_spb_serv <-
             axis.titles = c("Promedio Acceso a Servicios Públicos por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
 
 ggsave(scat_spb_serv,filename= "../3_output/graficos/scat_spb_serv.pdf")
+
+scat_spb_serv
 ```
 
 ```{r}
@@ -95,6 +105,8 @@ scat_spb_dens <-
             axis.titles = c("Promedio de Densidad Poblacional por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
 
 ggsave(scat_spb_dens,filename= "../3_output/graficos/scat_spb_dens.pdf")
+
+scat_spb_dens
 ```
 ```{r Modelos de Regresión Multivariada (coeficientes estadarizados), echo=FALSE}
 reg1=lm(sentido_pertenencia ~ conflicto_micro, data=elsoc_barrio) #sólo conflicto micro
@@ -123,6 +135,8 @@ modelos_nvl1 <-
                          to.file = "html",file.name = "modelos_nvl1.html")
 
 webshot("modelos_nvl1.html",file = "../3_output/tablas/modelos_nvl1.png")
+
+modelos_nvl1
 ```
 
 ```{r Modelos Multinivel, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
