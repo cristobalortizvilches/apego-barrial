@@ -10,6 +10,8 @@ navbar:
     - text: ""
       icon: fa-github fa-lg
       href: https://github.com/cristobalortizvilches/dse_spb
+    - text: "OSF"
+      href: https://osf.io/3e48a/
 output:
   html_document:
     theme: readable
