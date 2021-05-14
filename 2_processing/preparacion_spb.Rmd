@@ -1,0 +1,204 @@
+---
+title: "Código preparación 2.0"
+author: "Cristóbal Ortiz"
+date: "17-04-2021"
+output: html_document
+---
+
+```{r Librerías}
+pacman::p_load(dplyr, #Manipulacion de datos
+               stargazer, #Tablas
+               sjmisc, # Tablas
+               summarytools, # Tablas
+               kableExtra, #Tablas
+               sjPlot, #Tablas y gráficos
+               corrplot, # Correlaciones
+               sessioninfo, # Información de la sesión de trabajo
+               multilevel, #para alpha de cronbach
+               scales, #cambios en escalas de medición
+               sjlabelled, #etiquetamiento de variables
+               mice) #imputar NA 
+getwd()
+```
+
+```{r Cargar Base de datos}
+#load("1_input/data/original/ELSOC_W01_V4.00_R.RData") #base de datos ola 1
+load("../1_input/data/original/ELSOC_W01_CIT_v3.20_R.RData") #base de datos ola 1 + CIT
+```
+
+```{r Selección de variables: selección/filtrado/limpieza}
+#selección de variables
+elsoc_mod <- dplyr::select(
+  elsoc_2016a,sexo=m0_sexo,edad=m0_edad,participacion=c12_01, #participacion en jjvv #características socio-demográficas
+  urbe=estrato,comuna=comuna.x,distrito,zona,manzana, #identificadores geofráficos
+  barrio_ideal=t02_01,integrado_barrio=t02_02,identificado_barrio=t02_03,pertenencia_barrio=t02_04, #spb
+  amistad=t03_01,sociabilidad=t03_02,cordialidad=t03_03,colaboracion=t03_04, #calidad rrss
+  conf_vecinos=t01,lazos=t04_05, prox_fam=t06_08, #capital social
+  frec_peleas=t09_01,frec_robos=t09_02,frec_trafico=t09_03, #experiencias de criminalidad
+  sent_seguridad=t10,satisf_seguridad=t06_01, # experiencia de inseguridad 
+  frec_ruidos=t11_01,frec_mascot=t11_02,frec_amenazas=t11_03,frec_basura=t11_04, #conflicto micro social
+  conect=t06_02,prox_trabajo=t06_05,prox_col=t06_06,prox_com=t06_07, #satisf geo op barrio
+  areasvr=t06_03,limpieza=t06_04,estetica=t04_01, #varias sin agrupar
+  costo_bienes=t04_02,costo_viv=t04_03,costo_trans=t04_04, #economía urbana
+  rep_barrial=t08, #reputación barrial
+  res_desagradables=t04_06,act_desagradables=t04_07, #deseabilidad de estilos de vida
+  nvl_esco=nivedzon,expo_hete=sdedzon,ptj_violencia=dviolzon,ptj_sustraccion=drobozon, #entorno social
+  densidad=denszon,colegios=acedzon,servicios_publicos=accszon, #entorno espacial
+  areas_verdes=acverzon,calidad_ambiental=ambzon) #entorno sin agrupar
+
+#filtramos sólo para el conglomerado urbano de Santiago
+elsoc_mod <- dplyr::filter(elsoc_mod, urbe < 2)
+
+#convertimos no sabe/no responde a NA
+elsoc_mod[elsoc_mod == -888] <- NA
+elsoc_mod[elsoc_mod == -999] <- NA
+
+view(dfSummary(elsoc_mod, headings = FALSE))
+
+#eliminar NA (de imputar no es necesaria esta df)
+sum(is.na(elsoc_mod))
+elsoc_mod <- na.omit(elsoc_mod)
+```
+
+```{r Manipulación de variables: recodificación/índices/reescalamiento}
+#----Construcción Y: Sentido de pertenencia al barrio----
+
+##----índice de "Sentido de pertenencia al barrio"
+elsoc_mod$sentido_pertenencia <- ((elsoc_mod$barrio_ideal + elsoc_mod$integrado_barrio + elsoc_mod$identificado_barrio + elsoc_mod$pertenencia_barrio)/4)
+elsoc_mod$sentido_pertenencia <- set_label(x = elsoc_mod$sentido_pertenencia, label = "Sentido de pertenencia al barrio")
+
+#-----Construcción X1: Experiencia de Habitar el Territorio----
+
+##----índice de "Percepción de calidad en relaciones sociales barriales" 
+elsoc_mod$calidad_rrss <- ((elsoc_mod$amistad + elsoc_mod$sociabilidad + elsoc_mod$cordialidad + elsoc_mod$colaboracion)/4)
+elsoc_mod$calidad_rrss <- set_label(x = elsoc_mod$calidad_rrss,label = "Percepción de calidad de relaciones sociales en el barrio")
+
+##----subíndice de "Percepción de inseguridad en el Barrio" recodificamos para invertir los valores de respuesta de modo que mida inseguridad 
+elsoc_mod <- mutate(elsoc_mod,sent_inseguridad = car::recode(elsoc_mod$sent_seguridad,"1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
+elsoc_mod <- mutate(elsoc_mod,insatisf_seguridad = car::recode(elsoc_mod$satisf_seguridad, "1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
+elsoc_mod$percep_inseguridad <- ((elsoc_mod$sent_inseguridad + elsoc_mod$insatisf_seguridad)/2)
+
+##----subíndice de "Experiencias de Criminalidad en el Barrio"
+elsoc_mod$exp_criminalidad <- ((elsoc_mod$frec_peleas + elsoc_mod$frec_robos + elsoc_mod$frec_trafico)/3)
+elsoc_mod$exp_criminalidad <- set_label(x = elsoc_mod$exp_criminalidad,label = "Experiencias de criminalidad en el barrio")
+
+##----índice de "Nivel de inseguridad experimentada en el barrio"
+elsoc_mod$nvl_inseguridad <- ((elsoc_mod$sent_inseguridad + elsoc_mod$insatisf_seguridad + elsoc_mod$frec_peleas + elsoc_mod$frec_robos + elsoc_mod$frec_trafico)/5)
+
+##----índice de "Experiencia de molestias en el barrio"
+elsoc_mod$molestias_barrio <- ((elsoc_mod$frec_ruidos + elsoc_mod$frec_mascot + elsoc_mod$frec_amenazas + elsoc_mod$frec_basura)/4)
+elsoc_mod$molestias_barrio <- set_label(x = elsoc_mod$molestias_barrio,label = "Experiencia de molestias en el barrio")
+
+##----índice de "Satisfacción con la geografía de oportunidades del barrio"
+elsoc_mod$satisf_gobarrio <- ((elsoc_mod$conect + elsoc_mod$prox_trabajo + elsoc_mod$prox_col + elsoc_mod$prox_com)/4)
+elsoc_mod$satisf_gobarrio <- set_label(x = elsoc_mod$satisf_gobarrio, label = "Satisfacción con la geografía de oportunidades del barrio")
+
+##----índice de "Experiencia de economía urbana gentrificada"
+elsoc_mod$exp_gentrificacion <- ((elsoc_mod$costo_bienes + elsoc_mod$costo_viv + elsoc_mod$costo_trans)/3)
+elsoc_mod$exp_gentrificacion <- set_label(x = elsoc_mod$exp_gentrificacion, label = "Experiencia de economía urbana gentrificada en el barrio")
+
+##----índice de "Presencia de estilos de vida deseables"
+elsoc_mod$est_vida <- ((elsoc_mod$act_desagradables + elsoc_mod$res_desagradables)/2)
+
+#----Construcción X2: Entorno Territorial----
+
+##----Reescalamiento variable de densidad para dejarla en escala de 0 a 1
+elsoc_mod$densidad <- rescale(elsoc_mod$densidad)
+
+##----Reescalamiento de variable nivel socioeconómico medido por escolaridad
+elsoc_mod$nvl_esco <- rescale(elsoc_mod$nvl_esco)
+
+##----Reescalamieno variable exposición a la heterogeneidad en escala 0 a 1
+elsoc_mod$expo_hete <- rescale(elsoc_mod$expo_hete)
+
+##----Recode en dummy participación barrial
+elsoc_mod$participacion <- car::recode(elsoc_mod$participacion,"1=0;2=1;3=2")
+elsoc_mod$participacion <- as.factor(elsoc_mod$participacion)
+
+view(dfSummary(elsoc_mod, headings=FALSE))
+```
+
+```{r Validación de índices}
+tabla_indice_spb <- dplyr::select(elsoc_mod,barrio_ideal,integrado_barrio,identificado_barrio,pertenencia_barrio)
+#cronbach(tabla_indice_spb) #0.87
+
+tabla_indice_crrss <- dplyr::select(elsoc_mod,amistad,sociabilidad,cordialidad,colaboracion)
+#cronbach(tabla_indice_crrss) #0.81
+
+tabla_indice_percep_inseguridad <- dplyr::select(elsoc_mod,sent_inseguridad,insatisf_seguridad)
+#cronbach(tabla_indice_percep_inseguridad) #0,67
+
+tabla_indice_expcrim <- dplyr::select(elsoc_mod,frec_peleas,frec_robos,frec_trafico)
+#cronbach(tabla_indice_expcrim) #0.75
+
+tabla_indice_nvlinseguridad <- dplyr::select(elsoc_mod,sent_inseguridad,insatisf_seguridad,frec_peleas,frec_robos,frec_trafico)
+#cronbach(tabla_indice_nvlinseguridad) #0.79
+
+tabla_indice_molestias <- dplyr::select(elsoc_mod,frec_ruidos,frec_mascot,frec_amenazas,frec_basura)
+#cronbach(tabla_indice_molestias) #0.67
+
+
+tabla_indice_geop <- dplyr::select(elsoc_mod,conect,prox_trabajo,prox_col,prox_com)
+#cronbach(tabla_indice_geop) #0,71
+
+tabla_indice_ecourb <- dplyr::select(elsoc_mod,costo_bienes,costo_viv,costo_trans)
+#cronbach(tabla_indice_ecourb) #0.61
+
+tabla_indice_estvida <- dplyr::select(elsoc_mod,res_desagradables,act_desagradables)
+#cronbach(tabla_indice_estvida) #0.71
+```
+
+```{r Generación de base de datos para el análisis}
+##----creamos data frame con todos los datos necesarios para análisis multinivel
+elsoc_barrio <- dplyr::select(
+  elsoc_mod,sexo, edad, participacion, #variables sociodemográficas
+  comuna,zona,distrito, #identificadores geográficos
+  sentido_pertenencia,calidad_rrss,conf_vecinos,lazos,prox_fam,molestias_barrio, #exp habitar social (sociabilidad y k social)
+  percep_inseguridad,exp_criminalidad,nvl_inseguridad, #exp habitar social (seguridad)
+  satisf_gobarrio,exp_gentrificacion, #exp habitar espacial (satisf geo op y econ urbana)
+  rep_barrial,est_vida, #exp habitar simbólica
+  nvl_esco, expo_hete,ptj_violencia, ptj_sustraccion, #entorno territorial social
+  servicios_publicos, densidad) #entorno territorial espacial
+
+#view(dfSummary(elsoc_barrio, headings=FALSE)) 
+
+#calculamos una nueva variable que será el promedio de la variable "Sentido de Pertenencia" agrupada por zona
+elsoc_barrio <- elsoc_barrio %>%
+  group_by(zona) %>%
+  mutate(spb_media_zonal = mean(sentido_pertenencia))
+
+#calculamos una nueva variable que será el promedio de la variable "Reputación Barrial" agrupada por zona
+elsoc_barrio <- elsoc_barrio%>%
+  group_by(zona) %>%
+  mutate(repbarrial_media_zonal = mean(rep_barrial))
+
+#renombramos las comunas 
+elsoc_barrio$comuna <- as.factor(elsoc_barrio$comuna)
+elsoc_barrio$comuna <- factor(elsoc_barrio$comuna,labels = c("Santiago", "Cerrillos", "Cerro Navia", "Conchali", "El Bosque", "Estacion Central", "Huechuraba","Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipu", "Nnunnoa", "Pedro Aguirre Cerda", "Pennialolen", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquin", "San Miguel", "San Ramon", "Vitacura", "Puente Alto", "San Bernardo", "Padre Hurtado"))
+
+#Promedio por comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(spb_media_comunal = mean(sentido_pertenencia))
+#Desviación estándarpor comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(spb_sd_comunal = sd(sentido_pertenencia))
+#Tamaño por comuna
+elsoc_barrio = elsoc_barrio %>%  group_by(comuna) %>% mutate(spb_n_comunal = length(sentido_pertenencia))
+
+#base con descriptivos por comuna 
+comunas <- elsoc_barrio %>% group_by(Comuna=to_label(comuna)) %>% summarise("Promedio Sentido de Pertenencia"=mean(spb_media_comunal), "SD Sentido de Pertenencia"=mean(sentido_pertenencia), N=mean(spb_n_comunal)) #%>% print(n = nrow(.))
+comunas <- as.data.frame(comunas)
+#View(comunas)
+
+#elsoc_barrio[25:27] <- list(NULL) 
+
+#Filtrando las comunas con N bajo
+#elsoc_barrio <- dplyr::filter(elsoc_barrio, comuna!="Vitacura")
+
+getwd()
+#guardamos base de datos procesada con el fin de hacerla disponible para el análisis 
+save(elsoc_barrio,file = "../1_input/data/procesada/elsoc_barrio.RData")
+```
+
+```{r}
+sessionInfo()
+```
+

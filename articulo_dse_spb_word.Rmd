@@ -1,26 +1,19 @@
 ---
 title: "El efecto de la Desigualdad Socio-espacial sobre el Sentido de Pertenencia a Escala Barrial: el caso del Área Metropolitana de Santiago de Chile"
 author: "Cristóbal Ortiz"
-date: "11-07-2020"
+date: "08-10-2020"
 output:
-  html_document:
-    df_print: paged
-    theme: readable
-    toc: yes
-    toc_float: yes
-editor_options:
-  chunk_output_type: inline
-bibliography: ../1_input/bib/dse_spb.bib
-csl: ../1_input/bib/apa.csl
-link-citations: yes
+  word_document: default
+documentclass: article
+fontsize: 12pt
+linkcolor: blue
+bibliography: 1_input/bib/dse_spb.bib
+csl: 1_input/bib/apa.csl
 ---
-
 <div style="text-align: justify">
-
-
 # **Abstract**
 
-Esta investigación busca identificar las variables individuales y contextuales que afectan y explican la cohesión barrial percibida en el Gran Santiago. Para ello se utilizan los datos del Estudio Longitudinal Social de Chile [@elsoc_survey_estudio_2020], cuya muestra incluye 2927 casos a nivel nacional y 720 para el Gran Santiago. Se operacionaliza cohesión barrial como variable dependiente, y, como variables independientes de nivel individual, conflicto meso-social, conflicto micro-social, calidad de relaciones sociales en el barrio y reputación barrial. Asimismo, se operacionalizan indicadores territoriales referidos a la desigualdad socio-espacial como variables independientes de nivel contextual, agrupándolos en 184 zonas censales del Gran Santiago. Se elaboran y comparan modelos de regresión lineal múltiple para dar cuenta de las diferentes relaciones en el nivel individual, así como modelos multinivel para incorporar el efecto de las variables de contexto. En primer lugar, se logra hallar un modelo de nivel individual que explica la cohesión barrial, entre los predictores de nivel individual destaca la calidad de las relaciones sociales. En segundo lugar, se constata que el contexto sí influye en la cohesión, pues al agrupar por zonas, el 17% de la variación de la cohesión barrial se atribuye a la zona de residencia, además, el modelo multinivel explica el 82% de esta variación. Entre las variables de contexto que dan cuenta de la variación de la cohesión destaca la densidad poblacional, el puntaje de violencia urbana y el nivel de accesibilidad a servicios públicos. Finalmente, se elaboran siete modelos de interacción entre niveles y se constata la influencia del contexto en la relación de los predictores de nivel individual con la cohesión barrial. Los resultados principales de la interacción apuntan a que el acceso a servicios y equipamiento públicos modera el efecto de la calidad de las relaciones sociales sobre la cohesión barrial y a que el puntaje de violencia modera el efecto de la reputación del barrio sobre la cohesión barrial. 
+Esta investigación busca identificar las variables individuales y contextuales que afectan y explican la sentido de pertenencia al barrio en el Gran Santiago. Para ello se utilizan los datos del Estudio Longitudinal Social de Chile [@elsoc_survey_estudio_2020], cuya muestra incluye 2927 casos a nivel nacional y 720 para el Gran Santiago. Se operacionaliza cohesión barrial como variable dependiente, y, como variables independientes de nivel individual, conflicto meso-social, conflicto micro-social, calidad de relaciones sociales en el barrio y reputación barrial. Asimismo, se operacionalizan indicadores territoriales referidos a la desigualdad socio-espacial como variables independientes de nivel contextual, agrupándolos en 184 zonas censales del Gran Santiago. Se elaboran y comparan modelos de regresión lineal múltiple para dar cuenta de las diferentes relaciones en el nivel individual, así como modelos multinivel para incorporar el efecto de las variables de contexto. En primer lugar, se logra hallar un modelo de nivel individual que explica la cohesión barrial, entre los predictores de nivel individual destaca la calidad de las relaciones sociales. En segundo lugar, se constata que el contexto sí influye en la cohesión, pues al agrupar por zonas, el 17% de la variación de la cohesión barrial se atribuye a la zona de residencia, además, el modelo multinivel explica el 82% de esta variación. Entre las variables de contexto que dan cuenta de la variación de la cohesión destaca la densidad poblacional, el puntaje de violencia urbana y el nivel de accesibilidad a servicios públicos. Finalmente, se elaboran siete modelos de interacción entre niveles y se constata la influencia del contexto en la relación de los predictores de nivel individual con la cohesión barrial. Los resultados principales de la interacción apuntan a que el acceso a servicios y equipamiento públicos modera el efecto de la calidad de las relaciones sociales sobre la cohesión barrial y a que el puntaje de violencia modera el efecto de la reputación del barrio sobre la cohesión barrial. 
 
 **Palabras clave: cohesión barrial, conflicto social, relaciones sociales, desigualdad socio-espacial** 
 
@@ -134,7 +127,7 @@ Explicar cohesión barrial en el Gran Santiago a partir de (a) variables de nive
 
 Para dar cuenta de la cohesión barrial y los fenómenos de nivel individual y contextual que la explican se hizo uso del Estudio Longitudinal Social de Chile (ELSOC) del Centro de estudios de Conflicto y Cohesión Social (COES), cuyos datos fueron producidos en el 2016. La muestra obtenida a través de un muestreo probabilístico, estratificado y por conglomerados incluye un total de 2927 casos a nivel nacional, de los cuales se seleccionaron 720 casos pertenecientes al Gran Santiago. Luego de restar los valores perdidos se obtuvo una muestra final de 651 casos. La identificación de las unidades de nivel 2 se realizó por zonas censales, cuyo número de casos es de 184 en el Gran Santiago.
 
-Las principal variable utilizada es *Cohesión Barrial Percibida*. El resto de las variables se dividen entre las de nivel individual y las de nivel contextual. Las primeras corresponden a los sentimientos o percepción de los sujetos en torno al barrio de residencia: *Índice de Conflictos Mesosociales*, *Índice de Conflictos Microsociales*, *Calidad de las Relaciones Sociales en el Barrio* y *Reputación Barrial*. Las segundas, agrupadas por zona, dan cuenta de la conflictividad macrosocial. Los indicadores territoriales más relevantes para el análisis son: *Puntaje de Violencia*, *Accesibilidad a Servicios Públicos*, *Densidad Poblacional* y *Reputación Barrial por Zona*.
+Las principal variable utilizada es *sentido de pertenencia al barrio*. El resto de las variables se dividen entre las de nivel individual y las de nivel contextual. Las primeras corresponden a los sentimientos o percepción de los sujetos en torno al barrio de residencia: *Índice de Conflictos Mesosociales*, *Índice de Conflictos Microsociales*, *Calidad de las Relaciones Sociales en el Barrio* y *Reputación Barrial*. Las segundas, agrupadas por zona, dan cuenta de la conflictividad macrosocial. Los indicadores territoriales más relevantes para el análisis son: *Puntaje de Violencia*, *Accesibilidad a Servicios Públicos*, *Densidad Poblacional* y *Reputación Barrial por Zona*.
 
 La variable explicada, cohesión barrial, se construyó como un índice sumatorio simple a partir de cinco ítems que miden nivel de identificación y apego al barrio y uno que mide nivel de confianza en vecinos. Los cuatro primeros ítems miden la identificación y apego que siente la persona en escalas de Likert que responden a la pregunta ¿qué tan de acuerdo o en desacuerdo está con las siguientes afirmaciones?: (i) Este barrio es ideal para mí, (ii) Me siento integrado/a a este barrio, (iii) Me identifico con la gente de este barrio y (iv) Este barrio es parte de mí; puntuado de 1 a 5, siendo 1 totalmente en desacuerdo y 5 totalmente de acuerdo. El nivel de confianza en vecinos también está medido en escala Likert siendo 1 “muy poco” y 5 “mucho”. Se opta por dividir la totalidad de puntuación por la cantidad de indicadores para facilitar el análisis. En consecuencia, el índice construido oscila de manera continua entre valores 1 y 5, siendo 1 muy poco cohesionado y 5 muy cohesionado.
 
@@ -186,5 +179,4 @@ La cohesión barrial aumenta en la medida que se percibe mejor calidad de las re
 La cohesión barrial aumenta en la medida que se percibe mejor reputación barrial, por lo que la cuarta hipótesis se corrobora.  Existe capacidad explicativa por parte de esta variable, no obstante es baja.
 
 # **VI. Bibliografía**
-
 <div/>

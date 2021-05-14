@@ -2,7 +2,6 @@
 title: "El efecto de la Desigualdad Socio-espacial sobre el Sentido de Pertenencia a Escala Barrial: el caso del Área Metropolitana de Santiago de Chile"
 author:
    - Cristóbal Ortiz^[Estudiante de sociología Universidad de Chile - cristobal.ortiz.v@ug.uchile.cl]
-   - Valentina Vásquez^[Estudiante de sociología Universidad de Chile - valentina.vasquez.c@ug.uchile.cl]
 output:
   pdf_document: default
 documentclass: article

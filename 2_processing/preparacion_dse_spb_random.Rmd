@@ -39,7 +39,7 @@ view(dfSummary(elsoc_mod, headings=FALSE))
 
 ```{r Imputación NA's}
 #reemplazo de NA's por número extraído de muestreo aleatorio ¿desde que N es bueno hacer este proceso?
-#técnica para imputar valores aleatorios extraídos de una MAS de los datos que son !NA (sivre para categóricas y cuantitativas)
+#técnica para imputar valores aleatorios extraídos de una MAS de los datos que son !NA (sirve para categóricas y cuantitativas)
 
 rand.impute <- function(x) { #x es un vector de datos (o el mismo df) que puede contener NA
   missing <- is.na(x)  # missing contiene un vector de valores T/F dependiendo del NA de x

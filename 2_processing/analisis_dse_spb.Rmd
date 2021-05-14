@@ -2,11 +2,19 @@
 title: "Código de Análisis de Datos"
 output: html_document
 ---
-```{r include=FALSE}
+```{r Ajustes de Markdown,include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+options(scipen=999)
+rm(list=ls())
+options(knitr.kable.NA = '')
+```
+
+```{r Cargar paquetes, include=FALSE}
 pacman::p_load(ggplot2, #gráficos
                lme4, #multinivel
                texreg, #tabla de regresión
-               sjmisc,
+               sjmisc, 
                dplyr,
                sjPlot,
                jtools,
@@ -21,7 +29,7 @@ load("../1_input/data/procesada/elsoc_barrio.RData")
 names(elsoc_barrio)
 ```
 
-```{r Gráficos para la dependiente: Sentido de Pertenencia, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+```{r Promedio de SPB x Comuna, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 bar_spb=ggplot(elsoc_barrio, aes(reorder(to_label(comuna), -sentido_pertenencia),sentido_pertenencia))
 
 barras_spb <- 
@@ -36,7 +44,7 @@ ggsave(barras_spb,filename= "../3_output/graficos/barras_spb.pdf")
 barras_spb
 ```
 
-```{r echo=FALSE}
+```{r Boxplot SPB x Comuna, echo=FALSE}
 box_spb= ggplot(elsoc_barrio, aes(reorder(to_label(comuna), -sentido_pertenencia),sentido_pertenencia)) 
 
 boxplot_spb <-
@@ -52,7 +60,7 @@ boxplot_spb
 ```
 ```{r Scatter SPB y Reputación por comuna}
 names(elsoc_barrio)
-comuna_scat <- elsoc_barrio %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,puntaje_violencia,servicios_publicos,densidad) %>% summarise_all(mean)
+comuna_scat <- elsoc_barrio %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,ptj_violencia,servicios_publicos,densidad) %>% summarise_all(mean)
 
 scat_spb_rb <- 
   plot_scatter(comuna_scat,rep_barrial,sentido_pertenencia,
@@ -67,21 +75,21 @@ ggsave(scat_spb_rb,filename= "../3_output/graficos/scat_spb_rb.pdf")
 scat_spb_rb
 ```
 
-```{r}
+```{r Scatter SPB y ptj de Violencia}
 scat_spb_pv <-
-  plot_scatter(comuna_scat,puntaje_violencia,sentido_pertenencia,
+  plot_scatter(comuna_scat,ptj_violencia,sentido_pertenencia,
             dot.labels = to_label(comuna_scat$comuna),
             fit.line = "lm",
             show.ci = TRUE,
-            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Puntaje de Violencia agrupados por Comuna",
-            axis.titles = c("Promedio de Puntaje de Violencia por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y ptj de Violencia agrupados por Comuna",
+            axis.titles = c("Promedio de ptj de Violencia por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
 
 ggsave(scat_spb_pv,filename= "../3_output/graficos/scat_spb_pv.pdf")
 
 scat_spb_pv
 ```
 
-```{r}
+```{r Scatter SPB y Servicios Públicos}
 scat_spb_serv <-
   plot_scatter(comuna_scat,servicios_publicos,sentido_pertenencia,
             dot.labels = to_label(comuna_scat$comuna),
@@ -95,7 +103,7 @@ ggsave(scat_spb_serv,filename= "../3_output/graficos/scat_spb_serv.pdf")
 scat_spb_serv
 ```
 
-```{r}
+```{r Scatter SPB y Nivel de Densidad Poblacional, fig.height=600, fig.width=800, paged.print=FALSE}
 scat_spb_dens <- 
   plot_scatter(comuna_scat,densidad,sentido_pertenencia,
             dot.labels = to_label(comuna_scat$comuna),
@@ -108,77 +116,65 @@ ggsave(scat_spb_dens,filename= "../3_output/graficos/scat_spb_dens.pdf")
 
 scat_spb_dens
 ```
-```{r Modelos de Regresión Multivariada (coeficientes estadarizados), echo=FALSE}
-reg1=lm(sentido_pertenencia ~ conflicto_micro, data=elsoc_barrio) #sólo conflicto micro
-reg2=lm(sentido_pertenencia ~ exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add conflicto meso
-reg3=lm(sentido_pertenencia ~ econ_urb + rep_barrial + exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add rep barrial y economia urbana
-reg4=lm(sentido_pertenencia ~ lazos + participacion + confianza + calidad_rrss + econ_urb + rep_barrial + exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add dimensiones de cohesión
-reg5=lm(sentido_pertenencia ~ satisf_barrial + lazos + participacion + confianza + calidad_rrss + econ_urb + rep_barrial + exp_crimen + sentimiento_inseguridad + conflicto_micro, data=elsoc_barrio) #add satisfacción residencial
 
-#stargazer(reg1,reg2,reg3,reg4,reg5, type = "text")
+```{r Modelo de regresión multivariada}
 
-#reg6=lm(sentido_pertenencia ~ satisf_barrial + confianza + calidad_rrss + econ_urb + rep_barrial + sentimiento_inseguridad, data=elsoc_barrio) 
-#stargazer(reg5,reg6,type = "text") #aquí comparo modelo 5 con modelo 6 que tiene solo predictores significativos 
 
-#estandarización de coeficientes
-
-modelos_nvl1 <- 
-  export_summs(reg1,reg2,reg3,reg4,reg5, scale = TRUE ,
-               coefs = c("Intercepto"="(Intercept)","Conflicto
-                         Micro"="conflicto_micro","Sentimiento
-                         Inseguridad"="sentimiento_inseguridad","Experiencias de
-                         Crimen"="exp_crimen","Reputacion Barrial"="rep_barrial","Economia
-                         Urbana"="econ_urb","Calidad de RR.SS."="calidad_rrss","Confianza en
-                         Vecinos"="confianza","Participacion
-                         Activa"="participacion3","Participacion Inactiva"="participacion2","Lazos
-                         sociales"="lazos","Satisfacción Barrial"="satisf_barrial"),
-                         to.file = "html",file.name = "modelos_nvl1.html")
-
-webshot("modelos_nvl1.html",file = "../3_output/tablas/modelos_nvl1.png")
-
-modelos_nvl1
 ```
 
-```{r Modelos Multinivel, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+```{r Modelo Nulo y RIFSM, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 #modelo nulo
 model_0 = lmer(sentido_pertenencia ~ 1 + (1 | zona), data = elsoc_barrio)
 0.11/(0.11+0.68) #calculo ICC
-#0.167 -> 17%     #ICC 
+#0.139 -> 14%    #ICC 
+
+#modelo con variables de control
+model_1 =lmer(sentido_pertenencia ~ 1 + sexo + edad + (1 | zona), data = elsoc_barrio)
+0.09/(0.09+0.66) #calculo ICC
+#0.12 -> 12%    #ICC
 
 #modelo con predictores individuales
-model_1 = lmer(sentido_pertenencia ~ 1 + satisf_barrial + confianza + calidad_rrss + econ_urb + rep_barrial + sentimiento_inseguridad + (1 | zona), data = elsoc_barrio)
-0.03/(0.03+0.34) #calculo ICC
-#0.077 -> 7,7%   #ICC
+model_2 = lmer(sentido_pertenencia ~ 1 + calidad_rrss + conf_vecinos + lazos + percep_inseguridad + exp_criminalidad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + rep_barrial + (1 | zona), data = elsoc_barrio)
+0.03/(0.03+0.41) #calculo ICC
+#0.068 -> 6.8%   #ICC
 
 #modelo con predictores contextuales
-model_2 = lmer(sentido_pertenencia ~ 1 + densidad + puntaje_violencia + puntaje_sustraccion + servicios_publicos + nvl_socioecon + expo_hete + rep_barrial_meanbyzona +(1 | zona), data = elsoc_barrio)
-0.02/(0.02+0.59) #calculo ICC
-#0.032 -> 3.2%    #ICC
+model_3 = lmer(sentido_pertenencia ~ 1 + nvl_esco + expo_hete + ptj_violencia + ptj_sustraccion + densidad + servicios_publicos + repbarrial_media_zonal + (1 | zona), data = elsoc_barrio)
+0.02/(0.02+0.68) #calculo ICC
+#0.028 -> 2.8%    #ICC
 
 #modelo con predictores individuales y contextuales (multinivel)
-model_3 = lmer(sentido_pertenencia ~ 1 + satisf_barrial + confianza + calidad_rrss + econ_urb + rep_barrial + sentimiento_inseguridad + densidad + puntaje_violencia + puntaje_sustraccion + servicios_publicos + nvl_socioecon + expo_hete + rep_barrial_meanbyzona + (1 | zona), data = elsoc_barrio)
-0.02/(0.02+0.34) #calculo ICC
-#0.051 -> 5,1%    #ICC
+model_4 = lmer(sentido_pertenencia ~ 1 + calidad_rrss + conf_vecinos + lazos + percep_inseguridad + exp_criminalidad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + rep_barrial + nvl_esco + expo_hete + ptj_violencia + ptj_sustraccion + densidad + servicios_publicos + repbarrial_media_zonal + (1 | zona), data = elsoc_barrio)
+0.02/(0.02+0.40) #calculo ICC
+#0.047 -> 4.7%    #ICC
 
-screenreg(list(model_0,model_1,model_2,model_3))
+screenreg(list(model_0,model_1,model_2,model_3,model_4))
 ```
-```{r eval=FALSE, include=FALSE, results='asis'}
+
+```{r Tabla de Modelo Nulo y RIFSM,eval=FALSE, include=FALSE, results='asis'}
 #comparación gráfica de modelos
-htmlreg(list(model_0,model_1,model_2,model_3),
+getwd()
+htmlreg(list(model_0,model_2,model_3,model_4), file = "../output/tablas/rifsm_model.docx",
     custom.model.names = c("Modelo <br> Nulo","Modelo <br> Individual",
                            "Modelo <br> Contextual", "Modelo <br> Multinivel"),
     custom.coef.names = c("Intercepto","Satisfacción Barrial","Confianza en <br> Vecinos","Calidad RR.SS.",
                           "Economía Urbana","Reputación Barrial","Sentimiento <br> de Inseguridad",
-                          "Densidad","Puntaje Violencia",
-                          "Puntaje Sustracción","Servicios Públicos",
+                          "Densidad","ptj Violencia",
+                          "ptj Sustracción","Servicios Públicos",
                           "Nivel Socioeconómico <br> (Proxy Escolaridad)",
                           "Exposición Heterogeneidad <br> Socioeconómica",
                           "Reputación Barrial Zonal "),
     caption="Modelos Multinivel para Sentido de Pertenencia al Barrio",
     caption.above=TRUE,
-    digits=3,
-    doctype = FALSE)
+    digits=3)
 ```
+
+```{r Tabla de Modelo Nulo y RIFSM,eval=FALSE, include=FALSE, results='asis'}
+#comparación gráfica de modelos
+htmlreg(list(model_0,model_2,model_3,model_4), file = "../3_output/tablas/rifsm_model.doc",
+    digits=3)
+```
+
 
 ```{r}
 sessionInfo()
