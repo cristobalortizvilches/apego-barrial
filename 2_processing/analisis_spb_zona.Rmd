@@ -14,6 +14,7 @@ options(knitr.kable.NA = '')
 ```{r Cargar paquetes, include=FALSE}
 pacman::p_load(ggplot2, #gráficos
                lme4, #multinivel
+               nlme, 
                texreg, #tabla de regresión
                sjmisc, 
                dplyr,
@@ -21,7 +22,9 @@ pacman::p_load(ggplot2, #gráficos
                jtools,
                stargazer,
                webshotl,
-               ggeffects)
+               ggeffects,
+               flextable,
+               officer)
 ```
 
 ```{r Cargar base de datos procesada, include=FALSE}
@@ -32,60 +35,36 @@ sapply(elsoc_barrio, class)
 #View(elsoc_barrio)
 ```
 
-```{r Modelo de regresión multivariada}
-reg1=lm(spb_index ~ sexo + edad + educacion + estatus, data=elsoc_barrio)
-reg2=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio, data=elsoc_barrio)
-reg3=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion, data=elsoc_barrio)
-reg4=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + repb + est_vida, data=elsoc_barrio)
-
-screenreg(list(reg1,reg2,reg3,reg4))
-
-reg5=lm(spb_index ~ edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida, data=elsoc_barrio)
-screenreg(list(reg4,reg5))
-screenreg(reg5)
-```
 ### *Modelo multinivel para Sentido de Pertenencia Barrial agrupando por zona censal*
 
-
-En primer lugar, el modelo nulo muestra una correlación intraclase de 0.13 [0.10/(0.10+0.68)]. Esto quiere decir que un 13%  de la variabilidad del sentido de pertenencia se explica por las diferencias entre los entornos territoriales. Este resultado proporciona evidencia suficiente para afirmar que los datos presentan una estructura anidada, vale decir, que las entidades individuales se hallan anidadas a colectivos de nivel superior que las afectan (Aguinis et al. 2013). Lo anterior se denomina "dependencia contextual" (Aguinis et al, 2013) y justifica la introducción de variables de nivel superior, en este caso, variables que describen los entornos territoriales. 
-
-En segundo lugar, este modelo permite identificar los factores individuales o experienciales que afectan el sentido de pertenencia al barrio. Todos los factores experienciales presentan un efecto estadísticamente significativo (p<0.05) en la dimensión social, espacial y simbólica. En cuanto a los factores sociales, la calidad de las relaciones sociales tiene un efecto positivo moderado sobre el sentido de pertenencia, asimismo, tanto la confianza en vecinos, la satisfacción con la proximidad de lazos fuertes tienen un efecto positivo bajo. En el caso de la percepción de inseguridad en el barrio, existe un efecto negativo bajo sobre el sentido de pertenencia al barrio. Por el lado de los factores experienciales de tipo espacial, destaca la satisfacción con la geografía de oportunidades del barrio con un efecto positivo bajo estadísticamente significativo. Finalmente, en la dimensión simbólica, se indetifican dos factores tienen efecto negativo bajo sobre el sentido de pertenencia: la estigmatización barrial y la indeseabilidad de los estilos de vida. 
-
-En tercer lugar, en cuanto a los factores territoriales que afectan el sentido de pertenencia al barrio, podemos subdividir nuevamente en las dimensiones social, espacial y simbólica del entorno. La dimensión social incluye el grado de exposición a la heterogeneidad social como factor con efecto positivo moderado sobre el sentido de pertenencia, en cambio, el nivel de escolaridad promedio de los hogares y los puntajes de violencia y sustracción tienen un efecto negativo bajo. En cuanto a la dimensión espacial, el factor densidad poblacional tiene un efecto negativo moderado sobre el sentido de pertenencia, en cambio, la accesibilidad a servicios públicos tiene efecto positivo moderado. En lo que respecta a la dimensión simbólica presenta el factor estigmatización territorial promedio, que evidencia efecto negativo bajo sobre el sentido de pertenencia. Finalmente, resalta el hecho de que ninguno de los predictores, salvo la densidad poblacional, presenta significancia estadística.
-
-En el modelo contextual se observa que la correlación intraclase desciende a 2.8% [0.02/(0.02+0.68)], lo cual indica que, una vez incorporados los factores territoriales, ya va quedando menos variabilidad del sentido de pertenencia sin explicar. Lo anterior es evidencia suficiente para justificar la pertinencia explicativa de los factores contemplados. Finalmente, en el modelo multinivel la correlación intraclase desciende a 2.4% [0.01/(0.01+0.40)], por lo que se reduce con respecto al modelo contextual.
-
-Por último, se incorpora un sexto modelo que exluye variables territoriales de bajo efecto y sin significacia estadítica, esta son: escolaridad promedio del hogar y puntaje de sustracción. La correlación intraclase del modelo 6 demuestra tener el mismo valor que la del modelo multinivel, por lo que las variables excluidas demuestran tener bajo poder explicativo. Por consiguiente, en sucesivos análisis no se contemplan estas variables a fin de privilegiar la parsimonia de los modelos como criterio de simplificación. 
-
-Los resultados se pueden visualizar en la siguiente tabla:
 ```{r Modelo Nulo y RIFSM, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 #modelo nulo zona
 model_0 = lmer(spb_index ~ 1 + (1 | zona), data = elsoc_barrio)
-#0.11/(0.11+0.68) #calculo ICC zona
-#0.139 -> 14%    #ICC zona
+#0.11/(0.11+0.66) #calculo ICC zona
+#0.142 -> 14.2%    #ICC zona
 
 model_0_d = lmer(spb_index ~ 1 + (1 | distrito), data = elsoc_barrio)
-#0.10/(0.10+0.69) #calculo ICC distrito
-#0,126 -> 12.6% #ICC distrito
+#0.09/(0.09+0.67) #calculo ICC distrito
+#0,142 -> 11.8% #ICC distrito
 
 model_0_c = lmer(spb_index ~ 1 + (1 | comuna), data = elsoc_barrio)
-#0.04/(0.04+0.75) #calculo ICC comuna
-#0,05 -> 5% #ICC comuna
+#0.05/(0.05+0.72) #calculo ICC comuna
+#0,064 -> 6.4% #ICC comuna
 
 #modelo con predictores individuales
-model_1 = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + (1 | zona), data = elsoc_barrio)
-#0.02/(0.02+0.40) #calculo ICC
-#0.068 -> 4.6%   #ICC
+model_1 = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + (1 | zona), data = elsoc_barrio)
+#0.01/(0.01+0.39) #calculo ICC
+#0.025 -> 2.5%   #ICC
 
 #modelo con predictores contextuales
 model_2 = lmer(spb_index ~ 1 + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio)
-#0.02/(0.02+0.68) #calculo ICC
-#0.028 -> 2.8%    #ICC
+#0.01/(0.01+0.66) #calculo ICC
+#0.014 -> 1.4%    #ICC
 
 #modelo con predictores individuales y contextuales (multinivel)
-model_3 = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio)
-#0.01/(0.01+0.40) #calculo ICC
-#0.024 -> 2.4%    #ICC
+model_3 = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio)
+#0.001/(0.001+0.40) #calculo ICC
+#0.002 -> 0.2%    #ICC
 
 screenreg(list(model_0,model_1,model_2,model_3))
 ```
@@ -96,13 +75,13 @@ getwd()
 htmlreg(list(model_0,model_1,model_2,model_3), file = "../3_output/tablas/rifsm_model_zona.doc",
         custom.model.names = c("Modelo Nulo","Modelo Individual",
                            "Modelo Contextual", "Modelo Multinivel"),
-    custom.coef.names = c("Intercepto","30 a 49 años","50 a 64 años",">65 años",
-                          "Sociabilidad","Confianza en Vecinos","Proximidad de Lazos","Percepción de Inseguridad",
+    custom.coef.names = c("Intercepto","Tiempo Residencia",
+                          "Sociabilidad","Confianza en Vecinos","Ni seguro ni inseguro","Experiencia de inseguridad",
                           "Satisfacción con Accesibilidad",
                           "Ni Estigmatizado Ni Prestigioso","Prestigioso","Indeaseabilidad Estilos de Vida",
                           "Exposición a Heterogeneidad","Nivel de Violencia",
                           "Densidad Poblacional","Acceso a Servicios","Reputación Territorial"),
-    caption="Modelo Multinivel para Sentido de Pertenencia al Barrio",
+    caption="Modelo Multinivel para Apego al Barrio",
     caption.above=TRUE,
     digits=3)
 ```
@@ -123,10 +102,6 @@ sigma2_1=varcomp_1[2,4]
 varcomp_2=as.data.frame(VarCorr(model_2)) #modelo contextual
 tau00_2=varcomp_2[1,4]
 sigma2_2=varcomp_2[2,4]
-
-varcomp_2.1=as.data.frame(VarCorr(model_2.1)) #modelo contextual con var relevantes
-tau00_2.1=varcomp_2.1[1,4]
-sigma2_2.1=varcomp_2.1[2,4]
 ```
 
 ```{r Calculando ajuste por varianza, include=FALSE}
@@ -137,16 +112,28 @@ R2_1_L1=(sigma2_0-sigma2_1)/sigma2_0
 # Modelo 2 (predictores grupales)
 R2_2_L1=(sigma2_0-sigma2_2)/sigma2_0
 #R2_2_L1 #0.002
-R2_2_L2=(tau00_0-tau00_2.1)/tau00_0
+R2_2_L2=(tau00_0-tau00_2)/tau00_0
 #R2_2_L2 #0.93
-R2_2_L2.1=(tau00_0-tau00_2.1)/tau00_0
-#R2_2_L2.1
 
 # ICC (para comparación)
 ICC_0=tau00_0/(tau00_0+sigma2_0)
 #ICC_0 #0.13
 
 #R2L2 = 0.85 -> 85%; el modelo 2 está dando cuenta de 85% de la correlación intra-clase (13%)
+
+modelcol <- c("Modelos Nulo","Modelo Individual","Modelo Contextual")
+sigma2col <- c(sigma2_0,sigma2_1,sigma2_2)
+taucol <- c(tau00_0,tau00_1,tau00_2)
+r2l1col <- c("",R2_1_L1,R2_2_L1)
+r2l2col <- c("","",R2_2_L2)
+
+tabla_comp <- data.frame(modelcol,sigma2col,taucol,r2l1col,r2l2col)
+
+#stargazer(tabla_comp, type = "html", digits = 2, title = "Ajuste por varianza",
+          #covariate.labels=c("Modelos","DE","Tau","R2L1","R2L2"), out="tabla_comp.doc")
+
+
+write.table(tabla_comp,"../3_output/tablas/tabla_comp.csv",row.names = F,sep = ",")
 ```
 Table: Tabla comparativa estadísticos de variación
 
@@ -168,10 +155,10 @@ La tabla Anova 1 compara el modelo nulo con el modelo de predictores individuale
 
 ```{r Modelo nulo versus modelo 1, echo=FALSE, results='asis'}
 model_0a = lmer(spb_index ~ 1 + (1 | zona), data = elsoc_barrio, REML = FALSE)
-model_1a = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + (1 | zona), data = elsoc_barrio, REML = FALSE)
+model_1a = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + (1 | zona), data = elsoc_barrio, REML = FALSE)
 nulovsind <- anova(model_0a,model_1a)
 
-#kable(nulovsind)
+write.table(nulovsind, "../3_output/tablas/nulovsind.csv",row.names = F,sep = ",")
 ```
 
 Table: Tabla Anova 1
@@ -191,6 +178,8 @@ model_0_fix <- gls(spb_index ~ 1, data = elsoc_barrio, method = "ML")
 model_0_random <- lme(spb_index ~ 1, data = elsoc_barrio, random=~ 1 | zona, method="ML") 
 
 fixvsrandom <- anova(model_0_fix,model_0_random)
+
+write.table(fixvsrandom, "../3_output/tablas/fixvsrandom.csv",row.names = F,sep = ",")
 ```
 
 Table: Tabla Anova 2
@@ -204,10 +193,10 @@ Fuente: elaboración propia en base a los datos de ELSOC (2015)
 La tabla Anova 3 compara el modelo individual con el modelo multinivel que incorpora variables tanto individuales como contextuales, los resultados indican que se rechaza la hipótesis nula, por lo tanto existe diferencias significativas entre modelos; en este caso, el modelo multinivel se ajusta mejor que aquel que sólo incorpora predictores de nivel 1, por lo tanto, se justifica incorporar predictores de nivel 2.
 ```{r Intento de tabulado automatizado, echo=FALSE}
 #modelo 1 versus modelo 3
-model_3a = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + nvl_esco + expo_hete + violencia + sustraccion + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio, REML = FALSE)
+model_3a = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio, REML = FALSE)
 
 indvscon <- anova(model_1a,model_3a)
-#print(xtable::xtable(anova(model_1a,model_3a)), type="latex")
+print(xtable::xtable(anova(model_1a,model_3a)), type="latex")
 
 #kable(indvscon)
 ```
@@ -224,7 +213,7 @@ Fuente: elaboración propia en base a los datos de ELSOC (2015)
 ### *Modelos con interacción entre niveles*
 
 ```{r}
-model_soc = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida +  sociabilidad*(expo_hete + violencia + densidad + servicios_publicos + repb_zona) + (1 + sociabilidad | zona), data = elsoc_barrio, REML=F)
+model_soc = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des +  sociabilidad*(expo_hete + violencia + densidad + servicios_publicos + repb_zona) + (1 + sociabilidad | zona), data = elsoc_barrio, REML=F)
 screenreg(model_soc)
 ```
 
@@ -232,13 +221,13 @@ screenreg(model_soc)
 
 model_null = lmer(spb_index ~ 1 + (1 | zona), data = elsoc_barrio, REML = FALSE)
 
-model_rifsm = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio, REML = FALSE)
+model_rifsm = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 | zona), data = elsoc_barrio, REML = FALSE)
 
-model_rirsm = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 + sociabilidad | zona) + (1 + percep_inseguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio, REML = FALSE)
+model_rirsm = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete + violencia + densidad + servicios_publicos + repb_zona + (1 + sociabilidad | zona) + (1 + sent_seguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida_des | zona), data = elsoc_barrio, REML = FALSE)
 
-#model_clim = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + sociabilidad*(servicios_publicos) + (percep_inseguridad + satisf_gobarrio + repb)*violencia + conf_vecinos*densidad + repb_zona + est_vida*expo_hete + (1 + sociabilidad | zona) + (1 + percep_inseguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio, REML=F)
+#model_clim = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + sociabilidad*(servicios_publicos) + (sent_seguridad + satisf_gobarrio + repb)*violencia + conf_vecinos*densidad + repb_zona + est_vida_des*expo_hete + (1 + sociabilidad | zona) + (1 + sent_seguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida_des | zona), data = elsoc_barrio, REML=F)
 
-model_clim = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + sociabilidad*(servicios_publicos + densidad + repb_zona) + percep_inseguridad*violencia + est_vida*expo_hete + (1 + sociabilidad | zona) + (1 + percep_inseguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio, REML=F)
+model_clim = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + sociabilidad*(servicios_publicos + densidad + repb_zona) + sent_seguridad*violencia + est_vida_des*expo_hete + (1 + sociabilidad | zona) + (1 + sent_seguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida_des | zona), data = elsoc_barrio, REML=F)
 
 screenreg(list(model_null,model_rifsm,model_rirsm,model_clim))
 ```
@@ -246,14 +235,15 @@ screenreg(list(model_null,model_rifsm,model_rirsm,model_clim))
 ```{r Tabla modelo 4 pasos para word}
 htmlreg(list(model_null,model_rifsm,model_rirsm,model_clim), file = "../3_output/tablas/4steps_model_zona.doc",
     custom.model.names = c("Nulo","RIFSM","RIRSM", "CLIM"), #nombres modelos
-    custom.coef.names = c("Intercepto","30 a 49 años","50 a 64 años",">65 años",
-                          "Sociabilidad","Confianza en Vecinos","Proximidad de Lazos","Percepción de Inseguridad",
+    custom.coef.names = c("Intercepto","Tiempo de Residencia",
+                          "Sociabilidad","Confianza en Vecinos","Ni Seguro Ni Inseguro","Experiencia de Seguridad",
                           "Satisfacción con Accesibilidad",
                           "Ni Estigmatizado Ni Prestigioso","Prestigioso","Indeaseabilidad Estilos de Vida",
                           "Exposición a Heterogeneidad","Nivel de Violencia",
                           "Densidad Poblacional","Acceso a Servicios","Reputación Territorial",
                           "Sociabilidad*Acceso a Servicios","Sociabilidad*Densidad Poblacional","Sociabilidad*Reputación Territorial",
-                          "Percepción Inseguridad*Nivel de Violencia","Indeseabilidad Estilos de Vida*Exposición a Heterogeneidad"),
+                          "Ni Seguro Ni Inseguro*Nivel Violencia","Experiencia de Seguridad*Nivel de Violencia",
+                          "Deseabilidad Estilos de Vida*Exposición a Heterogeneidad"),
     digits=2)
 ```
 
@@ -320,7 +310,7 @@ Sobre la influencia del contexto de cada zona en la relación entre el conflicto
 Como se desprende de los puntos anteriores, existen dos interacciones entre niveles que cobran relevancia dado su tamaño del efecto y el nivel de significancia alcanzado: cuando el acceso a servicios públicos modera el efecto entre calidad de las relaciones y el sentido de pertenencia barrial, y cuando el puntaje de violencia modera el efecto de la reputación barrial sobre el sentido de pertenencia barrial. A continuación, se grafican estas interacciones con el fin de analizar en detalle su variación según entorno territorial.
 
 ```{r echo=FALSE}
-model_clim_rrss = lmer(spb_index ~ 1 + sociabilidad*servicios_publicos + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + repb_zona + (1 + sociabilidad | zona), data = elsoc_barrio,REML=F)
+model_clim_rrss = lmer(spb_index ~ 1 + sociabilidad*servicios_publicos + conf_vecinos + prox_fam + sent_seguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + repb_zona + (1 + sociabilidad | zona), data = elsoc_barrio,REML=F)
 
 me_rrss = plot_model(model_clim_rrss, type = "int",
            title = "",
@@ -332,7 +322,7 @@ save_plot(filename = "../3_output/graficos/me_rrss.png",fig = me_rrss )
 ```
 
 ```{r echo=FALSE}
-model_clim_soc = lmer(spb_index ~ 1 + sociabilidad*repb_zona + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + servicios_publicos + (1 + sociabilidad | zona), data = elsoc_barrio,REML=F)
+model_clim_soc = lmer(spb_index ~ 1 + sociabilidad*repb_zona + conf_vecinos + prox_fam + sent_seguridad + satisf_gobarrio + repb + est_vida + expo_hete + violencia + densidad + servicios_publicos + (1 + sociabilidad | zona), data = elsoc_barrio,REML=F)
 
 me_soc = plot_model(model_clim_soc, type = "int",
            title = "",
@@ -344,7 +334,7 @@ save_plot(filename = "../3_output/graficos/me_soc.png",fig = me_soc )
 ```
 Como se puede observar en el primer gráfico, cuando hay mal acceso a servicios públicos, la relación entre calidad de las relaciones y cohesión barrial mejora, es decir que ante un mal equipamiento público las relaciones sociales se vuelven aún más importantes para dar cuenta del sentido de pertenencia al barrio. Además, se puede observar que cuando hay un buena calidad de las relaciones sociales en el barrio, pierde relevancia el efecto moderador del acceso a los servicios públicos; por el contrario, cuando existe una baja calidad de relaciones sociales, sí importa el efecto moderador del acceso de los servicios públicos. Podemos concluir que existe un efecto *trade-off* o de compensación entre el acceso a los servicios público y la calidad de las relaciones sociales al momento de dar cuenta de el sentido de pertenencia barrial.
 ```{r echo=FALSE}
-model_clim_repb = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb*violencia + est_vida + expo_hete + densidad + servicios_publicos + repb_zona + (1 + repb | zona), data = elsoc_barrio,REML=F)
+model_clim_repb = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + sent_seguridad + satisf_gobarrio + repb*violencia + est_vida + expo_hete + densidad + servicios_publicos + repb_zona + (1 + repb | zona), data = elsoc_barrio,REML=F)
 
 me_repb = plot_model(model_clim_repb, type = "int",
            title = "",
@@ -364,7 +354,7 @@ plot_model(model_clim,type = "int")
 
 
 ```{r}
-model_clim_estig = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida +  expo_hete + densidad + servicios_publicos + (sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida)*repb_zona + (1 + sociabilidad | zona) + (1 + percep_inseguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio, REML=F)
+model_clim_estig = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + sent_seguridad + satisf_gobarrio + repb + est_vida +  expo_hete + densidad + servicios_publicos + (sociabilidad + conf_vecinos + prox_fam + sent_seguridad + satisf_gobarrio + repb + est_vida)*repb_zona + (1 + sociabilidad | zona) + (1 + sent_seguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio, REML=F)
 
 screenreg(model_clim_estig)
 

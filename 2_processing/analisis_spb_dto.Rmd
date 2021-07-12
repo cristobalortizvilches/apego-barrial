@@ -32,32 +32,8 @@ sapply(elsoc_barrio_dto, class)
 #View(elsoc_barrio_dto)
 ```
 
-```{r Modelo de regresión multivariada}
-reg1_dto=lm(spb_index ~ sexo + edad + educacion + estatus, data=elsoc_barrio_dto)
-reg2_dto=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio, data=elsoc_barrio_dto)
-reg3_dto=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion, data=elsoc_barrio_dto)
-reg4_dto=lm(spb_index ~ sexo + edad + educacion + estatus + sociabilidad + conf_vecinos + lazos + prox_fam + percep_inseguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + repb + est_vida, data=elsoc_barrio_dto)
+### *Modelo multinivel para Sentido de Pertenencia Barrial agrupando por Distrito*
 
-screenreg(list(reg1_dto,reg2_dto,reg3_dto,reg4_dto))
-
-reg5_dto=lm(spb_index ~ edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida, data=elsoc_barrio_dto)
-screenreg(list(reg4_dto,reg5_dto))
-screenreg(reg5_dto)
-```
-### *Modelo multinivel para Sentido de Pertenencia Barrial agrupando por zona censal*
-
-
-En primer lugar, el modelo nulo muestra una correlación intraclase de 0.13 [0.10/(0.10+0.68)]. Esto quiere decir que un 13%  de la variabilidad del sentido de pertenencia se explica por las diferencias entre los entornos territoriales. Este resultado proporciona evidencia suficiente para afirmar que los datos presentan una estructura anidada, vale decir, que las entidades individuales se hallan anidadas a colectivos de nivel superior que las afectan (Aguinis et al. 2013). Lo anterior se denomina "dependencia contextual" (Aguinis et al, 2013) y justifica la introducción de variables de nivel superior, en este caso, variables que describen los entornos territoriales. 
-
-En segundo lugar, este modelo permite identificar los factores individuales o experienciales que afectan el sentido de pertenencia al barrio. Todos los factores experienciales presentan un efecto estadísticamente significativo (p<0.05) en la dimensión social, espacial y simbólica. En cuanto a los factores sociales, la calidad de las relaciones sociales tiene un efecto positivo moderado sobre el sentido de pertenencia, asimismo, tanto la confianza en vecinos, la satisfacción con la proximidad de lazos fuertes tienen un efecto positivo bajo. En el caso de la percepción de inseguridad en el barrio, existe un efecto negativo bajo sobre el sentido de pertenencia al barrio. Por el lado de los factores experienciales de tipo espacial, destaca la satisfacción con la geografía de oportunidades del barrio con un efecto positivo bajo estadísticamente significativo. Finalmente, en la dimensión simbólica, se indetifican dos factores tienen efecto negativo bajo sobre el sentido de pertenencia: la estigmatización barrial y la indeseabilidad de los estilos de vida. 
-
-En tercer lugar, en cuanto a los factores territoriales que afectan el sentido de pertenencia al barrio, podemos subdividir nuevamente en las dimensiones social, espacial y simbólica del entorno. La dimensión social incluye el grado de exposición a la heterogeneidad social como factor con efecto positivo moderado sobre el sentido de pertenencia, en cambio, el nivel de escolaridad promedio de los hogares y los puntajes de violencia y sustracción tienen un efecto negativo bajo. En cuanto a la dimensión espacial, el factor densidad poblacional tiene un efecto negativo moderado sobre el sentido de pertenencia, en cambio, la accesibilidad a servicios públicos tiene efecto positivo moderado. En lo que respecta a la dimensión simbólica presenta el factor estigmatización territorial promedio, que evidencia efecto negativo bajo sobre el sentido de pertenencia. Finalmente, resalta el hecho de que ninguno de los predictores, salvo la densidad poblacional, presenta significancia estadística.
-
-En el modelo contextual se observa que la correlación intraclase desciende a 2.8% [0.02/(0.02+0.68)], lo cual indica que, una vez incorporados los factores territoriales, ya va quedando menos variabilidad del sentido de pertenencia sin explicar. Lo anterior es evidencia suficiente para justificar la pertinencia explicativa de los factores contemplados. Finalmente, en el modelo multinivel la correlación intraclase desciende a 2.4% [0.01/(0.01+0.40)], por lo que se reduce con respecto al modelo contextual.
-
-Por último, se incorpora un sexto modelo que exluye variables territoriales de bajo efecto y sin significacia estadítica, esta son: escolaridad promedio del hogar y puntaje de sustracción. La correlación intraclase del modelo 6 demuestra tener el mismo valor que la del modelo multinivel, por lo que las variables excluidas demuestran tener bajo poder explicativo. Por consiguiente, en sucesivos análisis no se contemplan estas variables a fin de privilegiar la parsimonia de los modelos como criterio de simplificación. 
-
-Los resultados se pueden visualizar en la siguiente tabla:
 ```{r Modelo Nulo y RIFSM, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #modelo nulo zona
@@ -66,7 +42,7 @@ model_0_dto = lmer(spb_index ~ 1 + (1 | distrito), data = elsoc_barrio_dto)
 #0,128 -> 12.8% #ICC distrito
 
 #modelo con predictores individuales
-model_1_dto = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + (1 | distrito), data = elsoc_barrio_dto)
+model_1_dto = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + (1 | distrito), data = elsoc_barrio_dto)
 #0.02/(0.02+0.39) #calculo ICC
 #0.047 -> 4.8%   #ICC
 
@@ -76,7 +52,7 @@ model_2_dto = lmer(spb_index ~ 1 + expo_hete_dto + violencia_dto + densidad_dto 
 #0.041 -> 4.1%    #ICC
 
 #modelo con predictores individuales y contextuales (multinivel)
-model_3_dto = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto)
+model_3_dto = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto)
 #0.014/(0.014+0.39) #calculo ICC
 #0.034 -> 3.4%    #ICC
 
@@ -88,13 +64,13 @@ screenreg(list(model_0_dto,model_1_dto,model_2_dto,model_3_dto))
 htmlreg(list(model_0_dto,model_1_dto,model_2_dto,model_3_dto), file = "../3_output/tablas/rifsm_model_dto.doc",
         custom.model.names = c("Modelo Nulo","Modelo Individual",
                            "Modelo Contextual", "Modelo Multinivel"),
-    custom.coef.names = c("Intercepto","30 a 49 años","50 a 64 años",">65 años",
-                          "Sociabilidad","Confianza en Vecinos","Proximidad de Lazos","Percepción de Inseguridad",
+    custom.coef.names = c("Intercepto","Tiempo de Residencia",
+                          "Sociabilidad","Confianza en Vecinos","Ni Seguro Ni Inseguro","Experiencia de Seguridad",
                           "Satisfacción con Accesibilidad",
                           "Ni Estigmatizado Ni Prestigioso","Prestigioso","Indeaseabilidad Estilos de Vida",
                           "Exposición a Heterogeneidad","Nivel de Violencia",
                           "Densidad Poblacional","Acceso a Servicios","Reputación Territorial"),
-    caption="Modelo Multinivel para Sentido de Pertenencia al Barrio",
+    caption="Modelo Multinivel para Apego Barrial",
     caption.above=TRUE,
     digits=3)
 ```
@@ -161,7 +137,7 @@ La tabla Anova 1 compara el modelo nulo con el modelo de predictores individuale
 
 ```{r Modelo nulo versus modelo 1, echo=FALSE, results='asis'}
 model_0a_dto = lmer(spb_index ~ 1 + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
-model_1a_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
+model_1a_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
 nulovsind <- anova(model_0a_dto,model_1a_dto)
 
 #kable(nulovsind)
@@ -197,7 +173,7 @@ Fuente: elaboración propia en base a los datos de ELSOC (2015)
 La tabla Anova 3 compara el modelo individual con el modelo multinivel que incorpora variables tanto individuales como contextuales, los resultados indican que se rechaza la hipótesis nula, por lo tanto existe diferencias significativas entre modelos; en este caso, el modelo multinivel se ajusta mejor que aquel que sólo incorpora predictores de nivel 1, por lo tanto, se justifica incorporar predictores de nivel 2.
 ```{r Intento de tabulado automatizado, echo=FALSE}
 #modelo 1 versus modelo 3
-model_3a_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete_dto + violencia_dto + sustraccion_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
+model_3a_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete_dto + violencia_dto + sustraccion_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
 
 indvscon_dto <- anova(model_1a_dto,model_3a_dto)
 #print(xtable::xtable(anova(model_1a,model_3a)), type="latex")
@@ -220,11 +196,11 @@ Fuente: elaboración propia en base a los datos de ELSOC (2015)
 
 model_null_dto = lmer(spb_index ~ 1 + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
 
-model_rifsm_dto = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
+model_rifsm_dto = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 | distrito), data = elsoc_barrio_dto, REML = FALSE)
 
-model_rirsm_dto = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto+ repb_dto + (1 + sociabilidad | distrito) + (1 + percep_inseguridad | distrito) + (1 + satisf_gobarrio | distrito) + (1 + repb | distrito) + (1 + est_vida | distrito), data = elsoc_barrio_dto, REML = FALSE)
+model_rirsm_dto = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto+ repb_dto + (1 + sociabilidad | distrito) + (1 + sent_seguridad | distrito) + (1 + satisf_gobarrio | distrito) + (1 + repb | distrito) + (1 + est_vida_des | distrito), data = elsoc_barrio_dto, REML = FALSE)
 
-model_clim_dto = lmer(spb_index ~ 1 + edad + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida +  sociabilidad*(servicios_publicos_dto + densidad_dto + repb_dto) + percep_inseguridad*violencia_dto + est_vida*expo_hete_dto + (1 + repb | distrito) + (1 + est_vida | distrito), data = elsoc_barrio_dto, REML=F)
+model_clim_dto = lmer(spb_index ~ 1 + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des +  sociabilidad*(servicios_publicos_dto + densidad_dto + repb_dto) + sent_seguridad*violencia_dto + est_vida_des*expo_hete_dto + (1 + repb | distrito) + (1 + est_vida_des | distrito), data = elsoc_barrio_dto, REML=F)
 
 screenreg(list(model_null_dto,model_rifsm_dto,model_rirsm_dto,model_clim_dto))
 ```
@@ -232,14 +208,14 @@ screenreg(list(model_null_dto,model_rifsm_dto,model_rirsm_dto,model_clim_dto))
 ```{r Tabla modelo 4 pasos para word}
 htmlreg(list(model_null_dto,model_rifsm_dto,model_rirsm_dto,model_clim_dto), file = "../3_output/tablas/4steps_model_dto.doc",
     custom.model.names = c("Nulo","RIFSM","RIRSM", "CLIM"), #nombres modelos
-    custom.coef.names = c("Intercepto","30 a 49 años","50 a 64 años",">65 años",
-                          "Sociabilidad","Confianza en Vecinos","Proximidad de Lazos","Percepción de Inseguridad",
+    custom.coef.names = c("Intercepto","Tiempo de Residencia",
+                          "Sociabilidad","Confianza en Vecinos","Ni Seguro Ni Inseguro","Experiencia de Seguridad",
                           "Satisfacción con Accesibilidad",
-                          "Ni Estigmatizado Ni Prestigioso","Prestigioso","Indeaseabilidad Estilos de Vida",
+                          "Ni Estigmatizado Ni Prestigioso","Prestigioso","Deseabilidad Estilos de Vida",
                           "Exposición a Heterogeneidad","Nivel de Violencia",
                           "Densidad Poblacional","Acceso a Servicios","Reputación Territorial",
                           "Sociabilidad*Acceso a Servicios","Sociabilidad*Densidad Poblacional","Sociabilidad*Reputación Territorial",
-                          "Percepción Inseguridad*Nivel de Violencia","Indeseabilidad Estilos de Vida*Exposición a Heterogeneidad"),
+                          "Ni Seguro Ni Inseguro*Nivel de Violencia","Experiencia Seguridad*Nivel de Violencia","Deseabilidad Estilos de Vida*Exposición a Heterogeneidad"),
     digits=2)
 ```
 
@@ -250,7 +226,7 @@ En torno a la influencia de los indicadores del entorno territorial en el efecto
 
 1.1. La calidad de las relaciones sociales en el barrio se encuentra relacionada de manera menos fuerte al aumentar la exposición a la heterogeneidad del entorno territorial. Es decir, el índice de exposición a la heterogeneidad del entorno territorial afecta de manera negativa el efecto de la calidad de las relaciones sociales sobre la sentido de pertenencia. De esta manera, se espera que el efecto de la calidad de las relaciones sociales sobre el sentido de pertenencia disminuya en -0.1 a medida que aumente en una unidad la exposición a la heterogeneidad, sin embargo, dicho efecto no tiene significancia estadística. 
 
-1.2. La calidad de las relaciones sociales en el barrio se encuentra relacionada de manera menos fuerte al aumentar el puntaje de violencia la zona censal, es decir, el puntaje de violencia del entorno territorial afecta de manera negativa el efecto de la calidad de las relaciones sociales sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la calidad de las relaciones sociales en el sentido de pertenencia disminuya en -0.35 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, no tiene significancia estadística. 
+1.2. La calidad de las relaciones sociales en el barrio se encuentra relacionada de manera menos fuerte al aumentar el puntaje de violencia la Distrito, es decir, el puntaje de violencia del entorno territorial afecta de manera negativa el efecto de la calidad de las relaciones sociales sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la calidad de las relaciones sociales en el sentido de pertenencia disminuya en -0.35 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, no tiene significancia estadística. 
 
 1.3. Se espera que ante variaciones unitarias del nivel de densidad poblacional en los entornos, el efecto de la calidad de las relaciones sociales aumente en 0.04. Esto es, entornos territoriales con alta densidad, la calidad de las relaciones está más fuertemente relacionada con el sentido de pertenencia en comparación a entornos con menor densidad.
 
@@ -272,13 +248,13 @@ Sobre la influencia del contexto de cada zona en la relación entre el conflicto
 ##### iv. Interacción entre Percepción inseguridad e Indicadores de Desigualdad Socio-espacial
 
 
-4.1. La percepción de inseguridad en el barrio se encuentra relacionada de manera más fuerte al aumentar el puntaje de violencia la zona censal, es decir, el puntaje de violencia del entorno territorial afecta de manera positiva el efecto de la percepción de inseguridad sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la percepción de inseguridad sobre el sentido de pertenencia aumente en 0.69 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, este resultado no tiene significancia estadística. 
+4.1. La percepción de inseguridad en el barrio se encuentra relacionada de manera más fuerte al aumentar el puntaje de violencia la Distrito, es decir, el puntaje de violencia del entorno territorial afecta de manera positiva el efecto de la percepción de inseguridad sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la percepción de inseguridad sobre el sentido de pertenencia aumente en 0.69 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, este resultado no tiene significancia estadística. 
 
 4.2 El efecto de la percepción de inseguridad sobre el sentido de pertenencia barrial aumenta en 0.1 con una significación estadística al 0.05% por cada unidad que aumenta el promedio de reputación barrial del entorno territorial. De esta manera, se espera que en barrios cuya reputación barrial es positiva, la relación entre la percepción de inseguridad y el sentido de pertenencia barrial tenga más fuerza.
 
 #### v. Interacción entre Satisfacción con geo op e indicadores de desigualdad socio-espacial
 
-5.1. La satisfacción con accesibilidad del barrio se encuentra relacionada de manera menos fuerte al aumentar el puntaje de violencia la zona censal, es decir, el puntaje de violencia del entorno territorial afecta de manera negativa el efecto de la satisfacción con accesibilidad sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la satisfacción con accesibilidad del barrio sobre el sentido de pertenencia disminuya en -0.52 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, este resultado no presenta significancia estadística. 
+5.1. La satisfacción con accesibilidad del barrio se encuentra relacionada de manera menos fuerte al aumentar el puntaje de violencia la Distrito, es decir, el puntaje de violencia del entorno territorial afecta de manera negativa el efecto de la satisfacción con accesibilidad sobre el sentido de pertenencia barrial. De esta manera, se espera que el efecto de la satisfacción con accesibilidad del barrio sobre el sentido de pertenencia disminuya en -0.52 a medida que aumente en una unidad el puntaje de violencia del barrio, sin embargo, este resultado no presenta significancia estadística. 
 
 5.2. El acceso a servicios públicos influye en el efecto de la satisfacción con accesibilidad sobre el sentido de pertenencia barrial según el entorno territorial donde se emplaza. Esta influencia del entorno indica que al incrementarse en una medida el acceso a servicios públicos, la relación entre la satisfacción con accesibilidad y el sentido de pertenencia barrial disminuye en un -0.25, pero sin significación estadística. Esto quiere decir que al haber más servicios públicos en el territorio, el efecto de la satisfacción con accesibilidad sobre el sentido de pertenencia disminuye en comparación a cuando hay menos acceso a servicios públicos. 
 
@@ -306,23 +282,37 @@ Sobre la influencia del contexto de cada zona en la relación entre el conflicto
 
 Como se desprende de los puntos anteriores, existen dos interacciones entre niveles que cobran relevancia dado su tamaño del efecto y el nivel de significancia alcanzado: cuando el acceso a servicios públicos modera el efecto entre calidad de las relaciones y el sentido de pertenencia barrial, y cuando el puntaje de violencia modera el efecto de la reputación barrial sobre el sentido de pertenencia barrial. A continuación, se grafican estas interacciones con el fin de analizar en detalle su variación según entorno territorial.
 
-```{r echo=FALSE}
-model_clim_soc_dto = lmer(spb_index ~ 1 + sociabilidad*repb_dto + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + (1 + sociabilidad | distrito), data = elsoc_barrio_dto,REML=F)
+```{r Rep Territorial Distrito, echo=FALSE}
+model_clim_soc_dto = lmer(spb_index ~ 1 + sociabilidad*repb_dto + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + (1 + sociabilidad | distrito), data = elsoc_barrio_dto,REML=F)
 
 me_soc_repb = plot_model(model_clim_soc_dto, type = "int",
            title = "",
-           axis.title = c("Sociabilidad barrial","Sentido de pertenencia al barrio"),
+           axis.title = c("Sociabilidad barrial","Apego al barrio"),
            colors = "bw")
 
 save_plot(filename = "../3_output/graficos/me_soc_dto.png",fig = me_soc_repb, width = 16, height = 10)
 ```
+```{r Rep Territorial Zona}
+load("../1_input/data/procesada/elsoc_barrio.RData")
+
+model_clim_soc_zon = lmer(spb_index ~ 1 + sociabilidad*repb_zona + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des + expo_hete + violencia + densidad + servicios_publicos + (1 + sociabilidad | distrito), data = elsoc_barrio,REML=F)
+
+me_soc_repb_zon = plot_model(model_clim_soc_zon, type = "int",
+           title = "",
+           axis.title = c("Sociabilidad barrial","Apego al barrio"),
+           colors = "bw")
+
+save_plot(filename = "../3_output/graficos/me_soc_zon.png",fig = me_soc_repb_zon, width = 16, height = 10)
+``
+```
+
 Como se puede observar en el primer gráfico, cuando hay mal acceso a servicios públicos, la relación entre calidad de las relaciones y cohesión barrial mejora, es decir que ante un mal equipamiento público las relaciones sociales se vuelven aún más importantes para dar cuenta del sentido de pertenencia al barrio. Además, se puede observar que cuando hay un buena calidad de las relaciones sociales en el barrio, pierde relevancia el efecto moderador del acceso a los servicios públicos; por el contrario, cuando existe una baja calidad de relaciones sociales, sí importa el efecto moderador del acceso de los servicios públicos. Podemos concluir que existe un efecto *trade-off* o de compensación entre el acceso a los servicios público y la calidad de las relaciones sociales al momento de dar cuenta de el sentido de pertenencia barrial.
 ```{r echo=FALSE}
-model_clim_est_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida*expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 + sociabilidad | distrito), data = elsoc_barrio_dto,REML=F)
+model_clim_est_dto = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des*expo_hete_dto + violencia_dto + densidad_dto + servicios_publicos_dto + repb_dto + (1 + sociabilidad | distrito), data = elsoc_barrio_dto,REML=F)
 
 me_est_expo = plot_model(model_clim_est_dto, type = "int",
            title = "",
-           axis.title = c("Indeseabilidad de Estilos de vida","Sentido de pertenencia al barrio"),
+           axis.title = c("Deseabilidad de Estilos de vida","Apego al barrio"),
            colors = "bw")
 
 save_plot(filename = "../3_output/graficos/me_est_dto.png",fig = me_est_expo, width = 16, height = 10)
@@ -336,7 +326,7 @@ plot_model(model_clim,type = "int")
 
 
 ```{r}
-model_clim_estig = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida +  expo_hete + densidad + servicios_publicos + (sociabilidad + conf_vecinos + prox_fam + percep_inseguridad + satisf_gobarrio + repb + est_vida)*repb_zona + (1 + sociabilidad | zona) + (1 + percep_inseguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida | zona), data = elsoc_barrio_dto, REML=F)
+model_clim_estig = lmer(spb_index ~ 1 + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des +  expo_hete + densidad + servicios_publicos + (sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + repb + est_vida_des)*repb_zona + (1 + sociabilidad | zona) + (1 + sent_seguridad | zona) + (1 + satisf_gobarrio | zona) + (1 + repb | zona) + (1 + est_vida_des | zona), data = elsoc_barrio_dto, REML=F)
 
 screenreg(model_clim_estig)
 

@@ -1,0 +1,142 @@
+---
+title: "Código de Análisis de Datos"
+output: html_document
+---
+
+```{r Ajustes de Markdown,include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+options(scipen=999)
+rm(list=ls())
+options(knitr.kable.NA = '')
+```
+
+```{r Cargar paquetes, include=FALSE}
+pacman::p_load(ggplot2, #gráficos
+               lme4, #multinivel
+               texreg, #tabla de regresión
+               sjmisc, 
+               dplyr,
+               sjPlot,
+               jtools,
+               stargazer,
+               webshotl,
+               ggeffects)
+```
+
+```{r Cargar base de datos procesada, include=FALSE}
+getwd()
+load("../1_input/data/procesada/elsoc_barrio_ind.RData")
+names(elsoc_barrio_ind)
+sapply(elsoc_barrio_ind, class)
+#View(elsoc_barrio_ind)
+```
+
+```{r Descriptivos variables}
+stargazer(elsoc_barrio_ind,type = "text")
+```
+
+```{r Modelo de regresión multivariada}
+##----Modelo general
+
+#modelo con factores sociodemográficos
+reg1=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio , data=elsoc_barrio_ind)
+#modelo agrega factores sociales
+reg2=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio, data=elsoc_barrio_ind)
+#modelo agrega factores físicos
+reg3=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion, data=elsoc_barrio_ind)
+#modelo agrega factores simbólicos
+reg4=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
+
+screenreg(list(reg1,reg2,reg3,reg4))
+
+##----Modelo parsimonioso/acotado
+reg5=lm(spb_index ~ tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
+
+screenreg(list(reg4,reg5))
+screenreg(reg5)
+
+#reg6=lm(spb_index ~  sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
+#screenreg(list(reg5,reg6))
+
+#R2
+#sin tiempo_barrio de 0.48 a 0.46 
+#sin dim social de 0.48 a 0.33  
+#sin dim física de 0.48 a 0.45
+#sin dim simbólica de 0.48 a 0.46 
+```
+
+
+
+```{r Tabla modelo general }
+htmlreg(list(reg1,reg2,reg3,reg4), file = "../3_output/tablas/int_model_cap1.doc",
+    custom.model.names = c("Modelo 1","Modelo 2","Modelo 3", "Modelo 4"), #nombres modelos
+    custom.coef.names = c("Intercepto","Mujer","30 a 49 años","50 a 64 años",">65 años", #sexo y edad
+                          "Media","Técnica","Universitaria", "Clase Media","Clase Alta", #clase social
+                          "No propietario", "Tiempo de residencia", #régimen viv y tiempo residencia
+                          "Sociabilidad","Confianza en Vecinos","Ni seguro ni inseguro","Experiencia de seguridad","conflictividad vecinal", #dim social
+                          "Satisfacción con Accesibilidad","Percepción de encarecimiento", #dim física
+                          "Ni Estigmatizado Ni Prestigioso","Prestigioso","Deseabilidad Estilos de Vida"), #dim simbólica
+    digits=2)
+```
+```{r Tabla modelo integral}
+htmlreg(list(reg5), file = "../3_output/tablas/pars_model_cap1.doc",
+    custom.model.names = c("Modelo Integral"), #nombres modelos
+    custom.coef.names = c("Intercepto","Tiempo de residencia", # tiempo residencia
+                          "Sociabilidad","Confianza en Vecinos","Ni seguro ni inseguro","Experiencia de seguridad", #dim social
+                          "Satisfacción con Accesibilidad","Percepción de encarecimiento", #dim física
+                          "Ni Estigmatizado Ni Prestigioso","Prestigioso","Deseabilidad Estilos de Vida"), #dim simbólica
+    digits=2)
+```
+
+# Linealidad
+```{r}
+plot(reg5, 1)
+
+#SE CUMPLE
+```
+
+# Normalidad de residuos
+
+```{r}
+plot(reg5, 2)
+
+shapiro.test(reg5$residuals)
+
+#SE CUMPLE
+```
+# Homocedasticidad
+
+```{r}
+plot(reg5, 3)
+
+library(car)
+ncvTest(reg5)
+
+#install.packages("lmtest")
+library(lmtest)
+bptest(reg5)
+#NO SE CUMPLE
+```
+# Multicolinealidad
+```{r}
+car::vif(reg5)
+
+#SE CUMPLE
+```
+# Casos influyentes
+
+```{r}
+plot(reg5, 4)
+plot(reg5, 5)
+
+elsoc_barrio_ind$cook <- cooks.distance(reg5)
+which(elsoc_barrio_ind$cook > 1)
+
+#SE CUMPLE
+```
+
+```{r}
+#sessionInfo()
+```
+

@@ -1,0 +1,209 @@
+---
+title: "Código preparación"
+author: "Cristóbal Ortiz"
+date: "29-04-2021"
+output: html_document
+---
+```{r Ajustes de Markdown,include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+options(scipen=999)
+rm(list=ls())
+options(knitr.kable.NA = '')
+```
+
+```{r Librerías}
+pacman::p_load(dplyr, #Manipulacion de datos
+               stargazer, #Tablas
+               sjmisc, # Tablas
+               summarytools, # Tablas
+               kableExtra, #Tablas
+               sjPlot, #Tablas y gráficos
+               corrplot, # Correlaciones
+               sessioninfo, # Información de la sesión de trabajo
+               multilevel, #para alpha de cronbach
+               scales, #cambios en escalas de medición
+               sjlabelled, #etiquetamiento de variables
+               mice) #imputar NA 
+getwd()
+```
+
+```{r Cargar Base de datos}
+#load("1_input/data/original/ELSOC_W01_V4.00_R.RData") #base de datos ola 1
+load("../1_input/data/original/ELSOC_W01_CIT_v3.20_R.RData") #base de datos ola 1 + CIT
+```
+
+```{r Selección de variables: selección/filtrado/limpieza}
+#selección de variables
+elsoc_mod <- dplyr::select(elsoc_2016a,
+  idencuesta, urbe=estrato,comuna=comuna.x,distrito,zona,manzana, #identificadores individuaes y geográficos
+  sexo=m0_sexo,edad=m0_edad,educacion=m01,estatus=d01_01,regi_viv=m33,tiempo_barrio=m34_03,jjvv=c12_01, #sociodemográficas
+  barrio_ideal=t02_01,integrado_barrio=t02_02,sentido_comunidad=t02_03,sentido_lugar=t02_04, #apego barrial
+  amigable=t03_01,sociable=t03_02,cordial=t03_03,colaborador=t03_04, #sociabilidad
+  conf_vecinos=t01, prox_fam=t06_08, #capital social 
+  sent_seguridad=t10,satisf_seguridad=t06_01, # experiencia de inseguridad 
+  frec_ruidos=t11_01,frec_mascot=t11_02,frec_amenazas=t11_03,frec_basura=t11_04, #conflictividad vecinal
+  conect=t06_02,prox_trabajo=t06_05,prox_col=t06_06,prox_com=t06_07, #satisfacción c/ accesibilidad
+  areasvr=t06_03,limpieza=t06_04,estetica=t04_01, #satisfacción con lugar sin agrupar
+  costo_bienes=t04_02,costo_viv=t04_03,costo_trans=t04_04, #economía urbana
+  rep_barrial=t08, #reputación barrial
+  res_desagradables=t04_06,act_desagradables=t04_07) #deseabilidad de estilos de vida (residentes y actividades)
+
+#filtramos sólo para el conglomerado urbano de Santiago
+elsoc_mod <- dplyr::filter(elsoc_mod, urbe == 1)
+
+#convertimos no sabe/no responde a NA
+elsoc_mod[elsoc_mod == -888] <- NA
+elsoc_mod[elsoc_mod == -999] <- NA
+
+#view(dfSummary(elsoc_mod))
+
+#eliminar NA (de imputar no es necesaria esta df)
+sum(is.na(elsoc_mod))
+elsoc_mod <- na.omit(elsoc_mod)
+```
+
+```{r Manipulación de variable Y}
+
+#----Construcción Y: Sentido de pertenencia al barrio
+##----índice de "Sentido de pertenencia al barrio"
+elsoc_mod$spb_index <- ((elsoc_mod$barrio_ideal + elsoc_mod$integrado_barrio + elsoc_mod$sentido_comunidad + elsoc_mod$sentido_lugar)/4)
+
+elsoc_mod$spb_index <- set_label(x = elsoc_mod$spb_index, label = "Indice de Sentido de pertenencia al barrio")
+
+##----Niveles de Sentido de Pertenencia al barrio
+elsoc_mod$spb_rec <- factor(with(elsoc_mod, case_when(spb_index < 2 ~ 1,
+                                                                  spb_index < 3 ~ 2,
+                                                                  spb_index < 4 ~ 3,
+                                                                  spb_index <= 5 ~ 4)),
+                                  labels = c('Muy Bajo','Bajo','Medio', 'Alto'))
+attr(elsoc_mod$spb_rec, which = 'label') <- 'Nivel de Sentido de Pertenencia al Barrio'
+
+#sjmisc::frq(elsoc_mod$spb_index)
+sjmisc::frq(elsoc_mod$spb_rec)
+```
+
+```{r Manipulación de variable X}
+#-----Construcción X1: Experiencia de Habitar el Territorio
+
+##----sociabilidad
+elsoc_mod$sociabilidad <- ((elsoc_mod$amigable + elsoc_mod$sociable + elsoc_mod$cordial + elsoc_mod$colaborador)/4)
+elsoc_mod$sociabilidad <- set_label(x = elsoc_mod$sociabilidad,label = "Socibilidad Barrial")
+
+##----confianza en vecinos
+#elsoc_mod$conf_vecinos <- factor(car::recode(elsoc_mod$conf_vecinos, "1:2=1;3=2;4:5=3"),
+                          #labels = c("Confianza baja","Confianza media","Confianza alta"))                          
+#attr(elsoc_mod$conf_vecinos, which = 'label') <- 'Nivel de confianza en vecinos'
+
+##----sentimiento de seguridad 
+elsoc_mod$sent_seguridad <- factor(car::recode(elsoc_mod$sent_seguridad, "1:2=1;3=2;4:5=3"),
+                          labels = c("Experiencia de inseguridad","Ni seguro ni inseguro","Experiencia de seguridad"))                          
+attr(elsoc_mod$sent_seguridad, which = 'label') <- 'Sentimiento de seguridad en el barrio'
+
+##----conflictividad vecinal
+elsoc_mod$molestias_barrio <- ((elsoc_mod$frec_ruidos + elsoc_mod$frec_mascot + elsoc_mod$frec_amenazas + elsoc_mod$frec_basura)/4)
+elsoc_mod$molestias_barrio <- set_label(x = elsoc_mod$molestias_barrio,label = "Conflictividad vecinal")
+
+##----satisfacción con accesibilidad a oportunidades
+elsoc_mod$satisf_gobarrio <- ((elsoc_mod$conect + elsoc_mod$prox_trabajo + elsoc_mod$prox_col + elsoc_mod$prox_com)/4)
+elsoc_mod$satisf_gobarrio <- set_label(x = elsoc_mod$satisf_gobarrio, label = "Satisfacción con accesibilidad")
+
+##----economía urbana
+elsoc_mod$exp_gentrificacion <- ((elsoc_mod$costo_bienes + elsoc_mod$costo_viv + elsoc_mod$costo_trans)/3)
+elsoc_mod$exp_gentrificacion <- set_label(x = elsoc_mod$exp_gentrificacion, label = "Encarecimiento de economía urbana barrial")
+
+sjmisc::frq(elsoc_mod$exp_gentrificacion)
+
+##----estilos de vida deseables
+elsoc_mod <- mutate(elsoc_mod,act_deseable = car::recode(elsoc_mod$act_desagradables,"1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
+elsoc_mod <- mutate(elsoc_mod,res_deseable = car::recode(elsoc_mod$res_desagradables, "1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
+
+elsoc_mod$est_vida_des <- ((elsoc_mod$act_deseable + elsoc_mod$res_deseable)/2)
+
+##----reputación barrial
+elsoc_mod$repb <- factor(car::recode(elsoc_mod$rep_barrial, "1:2=1;3=2;4:5=3"),
+                            labels = c("Estigmatizado","Ni Estigmatizado Ni Prestigioso", "Prestigioso"))
+attr(elsoc_mod$repb, which = 'label') <- 'Reputación Barrial' 
+```
+
+```{r Manipulación variables de control}
+##----Recode sexo/género
+elsoc_mod$sexo <- factor(elsoc_mod$sexo,labels = c('Hombre', 'Mujer'))
+elsoc_mod$sexo <- sjlabelled::set_label(elsoc_mod$sexo, label = c("Tipo de sexo"))
+
+##----Recode grupo etario
+elsoc_mod$edad <- factor(car::recode(elsoc_mod$edad, "18:29=1;30:49=2;50:64=3;65:150=4"),
+                           labels = c('18-29', '30-49', '50-64', '65 o más'))
+attr(elsoc_mod$edad, which = 'label') <- 'Tramo de edad'
+
+elsoc_mod$edad <- sjlabelled::set_label(elsoc_mod$edad, label = c("Edad en Tramos"))
+elsoc_mod$edad <- sjlabelled::set_labels(elsoc_mod$edad, labels = c("18 a 29", "30 a 49", "50 a 64", " 65 o mas"))
+sjmisc::frq(elsoc_mod$edad)
+
+##----Recode nivel de educación
+elsoc_mod$educacion <- car::recode(elsoc_mod$educacion,"1:3=1;4:5=2;6:7=3;8:10=4")
+elsoc_mod$educacion <- factor(elsoc_mod$educacion,labels = c("Basica","Media","Tecnica","Universitaria"))
+
+elsoc_mod$educacion <- sjlabelled::set_label(elsoc_mod$educacion, label = c("Nivel Educacional"))
+elsoc_mod$educacion <- sjlabelled::set_labels(elsoc_mod$educacion, labels = c("Basica", "Media", "Tecnica", "Universitaria"))
+sjmisc::frq(elsoc_mod$educacion)
+
+##----Recode estatus social subjetivo
+elsoc_mod$estatus<- factor(car::recode(elsoc_mod$estatus, "0:4=1;5:6=2;7:10=3"),
+                          labels = c("Bajo","Medio","Alto"))                          
+attr(elsoc_mod$estatus, which = 'label') <- 'Estatus Social Subjetivo'
+sjmisc::frq(elsoc_mod$estatus)
+
+##----Régimen de vivienda
+sjmisc::frq(elsoc_2016a$m33)
+sjmisc::frq(elsoc_mod$regi_viv)
+elsoc_mod$regi_viv <- factor(car::recode(elsoc_mod$regi_viv, "1:2=0;3:7=1"),
+                           labels = c('Propietario','No propietario'))
+
+##----tiempo residencia
+sjmisc::frq(elsoc_mod$tiempo_barrio)
+elsoc_mod$tiempo_barrio[which(elsoc_mod$tiempo_barrio ==  "80")] <- 75
+elsoc_mod$tiempo_barrio <- rescale(elsoc_mod$tiempo_barrio, to = c(1,5))
+elsoc_mod$tiempo_barrio <- set_label(x = elsoc_mod$tiempo_barrio, label = "Tiempo de residencia en el barrio")
+
+
+##----Afiliación a organización vecinal
+sjmisc::frq(elsoc_mod$jjvv)
+elsoc_mod$jjvv <- factor(elsoc_mod$jjvv,labels = c('No miembro', 'Miembro inactivo','Miembro activo'))
+elsoc_mod$jjvv <- sjlabelled::set_label(elsoc_mod$jjvv, label = c("Afiliación a junta de vecinos y/o organizaciones vecinales"))
+
+```
+
+```{r Validación de índices}
+tabla_indice_spb <- dplyr::select(elsoc_mod,barrio_ideal,integrado_barrio,sentido_comunidad,sentido_lugar)
+cronbach(tabla_indice_spb) #0.87
+
+tabla_indice_sociabilidad <- dplyr::select(elsoc_mod,amigable,sociable,cordial,colaborador)
+cronbach(tabla_indice_sociabilidad) #0.81
+
+tabla_indice_molestias <- dplyr::select(elsoc_mod,frec_ruidos,frec_mascot,frec_amenazas,frec_basura)
+cronbach(tabla_indice_molestias) #0.69
+
+tabla_indice_geop <- dplyr::select(elsoc_mod,conect,prox_trabajo,prox_col,prox_com)
+cronbach(tabla_indice_geop) #0,70
+
+tabla_indice_ecourb <- dplyr::select(elsoc_mod,costo_bienes,costo_viv,costo_trans)
+cronbach(tabla_indice_ecourb) #0.63
+
+tabla_indice_estvida <- dplyr::select(elsoc_mod,res_desagradables,act_desagradables)
+cronbach(tabla_indice_estvida) #0.71
+```
+
+
+```{r Generación de base de datos para el análisis}
+elsoc_barrio_ind <- elsoc_mod %>%
+  select(spb_index,sexo,edad,educacion,estatus,regi_viv,tiempo_barrio,sociabilidad,conf_vecinos,sent_seguridad, molestias_barrio,satisf_gobarrio,exp_gentrificacion,repb,est_vida_des)
+
+#guardamos base de datos procesada con el fin de analizarla 
+save(elsoc_barrio_ind,file = "../1_input/data/procesada/elsoc_barrio_ind.RData")
+```
+
+```{r}
+sessionInfo()
+```
+

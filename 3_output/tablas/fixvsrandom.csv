@@ -1,0 +1,3 @@
+"call","Model","df","AIC","BIC","logLik","Test","L.Ratio","p-value"
+"gls(model = spb_index ~ 1, data = elsoc_barrio, method = \"ML\")",1,2,1668.43698398148,1677.37858298904,-832.218491990738,"",NA,NA
+"lme.formula(fixed = spb_index ~ 1, data = elsoc_barrio, random = ~1 |     zona, method = \"ML\")",2,3,1650.52393377083,1663.93633228218,-822.261966885415,"1 vs 2",19.9130502106455,0.00000810452090891112
