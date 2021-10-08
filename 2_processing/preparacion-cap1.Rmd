@@ -1,0 +1,121 @@
+---
+title: "Código preparación"
+author: "Cristóbal Ortiz"
+date: "08-10-2021"
+output: html_document
+---
+```{r Ajustes de Markdown,include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+options(scipen=999)
+options(knitr.kable.NA = '')
+```
+
+```{r Librerías}
+library(tidyverse)
+library(psych)
+```
+
+```{r Load dataset}
+remove(list = ls())
+load("../1_input/data/original/elsoc-w01-dv/ELSOC_W01_V4.01_R.RData") #base de datos ola 1
+```
+
+```{r Limpieza dataset}
+elsoc_gs <- elsoc_2016 %>% 
+  filter(estrato == 1) %>% 
+  dplyr::select(idencuesta, estrato, comuna, comuna_cod, #ids
+         t01:t11_04, #variables territoriales
+         m0_sexo, m0_edad, m01, d01_01, m33, m34_03, c12_01) #sociodemográficas
+
+elsoc_gs[elsoc_gs == -888 | elsoc_gs == -999] <- NA
+```
+
+```{r Manipulación variables}
+elsoc_gs <- elsoc_gs %>%
+         #-----Recode Y: Apego al barrio
+  mutate(apbi = (t02_01 + t02_02 + t02_03 + t02_04)/4) %>% 
+  mutate(apbr = factor(case_when(apbi < 2 ~ 1, apbi < 3 ~ 2,
+                                 apbi < 4 ~ 3, apbi <= 5 ~ 4),
+                           labels = c('Muy Bajo', 'Bajo', 'Medio', 'Alto')),
+         #-----Recode Xi: Experiencia de habitar el barrio
+         soci = (t03_01 + t03_02 + t03_03 + t03_04)/4,
+         cnfi = t01,
+         segu = factor(car::recode(t10, "1:2=1;3=2;4:5=3"),
+                           labels = c("Experiencia de inseguridad",
+                                      "Ni seguro ni inseguro",
+                                      "Experiencia de seguridad")),
+         cfli = (t11_01 + t11_02 + t11_03 + t11_04)/4,
+         acci = (t06_02 + t06_05 + t06_06 + t06_07)/4,
+         geni = (t04_02 + t04_03 + t04_04)/3,
+         desi = (t04_06 + t04_07)/2,
+         repb = factor(car::recode(t08, "1:2=1;3=2;4:5=3"),
+                             labels = c("Estigmatizado",
+                                        "Ni Estigmatizado Ni Prestigioso", 
+                                        "Prestigioso")),
+         #-----Recode Controles: Variables socio-demográficas
+         sexo = factor(m0_sexo, labels = c('Hombre', 'Mujer')),
+         edad = factor(car::recode(m0_edad, "18:29=1; 30:49=2; 50:64=3; 65:150=4"),
+                       labels = c('18-29', '30-49', '50-64', '65 o más')),
+         educ = factor(car::recode(m01,"1:3=1; 4:5=2; 6:7=3; 8:10=4"),
+                       labels = c("Basica", "Media", "Tecnica", "Universitaria")),
+         essu = factor(car::recode(d01_01, "c(0,1,2,3)=1; c(4,5)=2; c(6,7,8,9,10)=3"),
+                      labels = c("Baja y media baja", "Media", "Alta y media alta")),
+         jjvv = factor(c12_01,labels = c('No miembro', 'Miembro inactivo',
+                                         'Miembro activo')),
+         regi = factor(car::recode(m33, "1:2=0;3:7=1"),
+                           labels = c('Propietario','No propietario')),
+         time = scales::rescale(m34_03, to = c(1,5)))
+
+
+#Etiqueta Y:
+attr(elsoc_gs$apbi,'label') <- 'Apego Barrial (Indice)'
+attr(elsoc_gs$apbr,'label') <- 'Apego Barrial (Escala)'
+#Etiqueta X:
+attr(elsoc_gs$soci,'label') <- 'Sociabilidad barrial'
+attr(elsoc_gs$cnfi,'label') <- 'Confianza en vecinos'
+attr(elsoc_gs$segu,'label') <- 'Seguridad barrial'
+attr(elsoc_gs$cfli,'label') <- 'Molestias vecinales'
+attr(elsoc_gs$acci,'label') <- 'Satisfacción con accesibilidad'
+attr(elsoc_gs$geni,'label') <- 'Encarecimiento urbano'
+attr(elsoc_gs$desi,'label') <- 'Deseabildiad social'
+attr(elsoc_gs$repb,'label') <- 'Reputación barrial'
+#Etiqueta controles:
+attr(elsoc_gs$sexo,'label') <- 'Sexo'
+attr(elsoc_gs$edad,'label') <- 'Tramo etario'
+attr(elsoc_gs$educ,'label') <- 'Nivel educacional'
+attr(elsoc_gs$essu,'label') <- 'Estatus social subjetivo'
+attr(elsoc_gs$jjvv,'label') <- 'Afiliación junta de vecinos'
+attr(elsoc_gs$regi,'label') <- 'Régimen de propiedad vivienda'
+attr(elsoc_gs$time,'label') <- 'Tiempo de residencia'
+```
+
+```{r Validación de índices}
+tabla_apbi <- dplyr::select(elsoc_gs, t02_01, t02_02, t02_03, t02_04)
+#alpha(tabla_apbi) #0.88
+
+tabla_soci <- dplyr::select(elsoc_gs, t03_01, t03_02, t03_03, t03_04)
+#alpha(tabla_soci) #0.81
+
+tabla_cfli <- dplyr::select(elsoc_gs, t11_01, t11_02, t11_03, t11_04)
+#alpha(tabla_cfli) #0.67
+
+tabla_acci <- dplyr::select(elsoc_gs, t06_02, t06_05, t06_06, t06_07)
+#alpha(tabla_acci) #0,71
+
+tabla_geni <- dplyr::select(elsoc_gs, t04_02, t04_03, t04_04)
+#alpha(tabla_geni) #0.62
+
+tabla_desi <- dplyr::select(elsoc_gs, t04_06, t04_07)
+#alpha(tabla_desi) #0.71
+```
+
+```{r Save dataset para análisis}
+#guardamos base de datos procesada con el fin de analizarla 
+save(elsoc_gs, file = "../1_input/data/procesada/elsoc_gs.RData")
+```
+
+```{r Informacion de sesión}
+sessionInfo()
+```
+
