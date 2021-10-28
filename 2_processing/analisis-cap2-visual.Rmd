@@ -1,0 +1,65 @@
+---
+title: "Código de Análisis de Datos"
+author: "Cristóbal Ortiz"
+date: "08-10-2021"
+output: html_document
+---
+
+```{r Scatter SPB y Reputación por comuna}
+names(elsoc_gs)
+comuna_scat <- elsoc_gs %>% group_by(comuna) %>% dplyr::select(sentido_pertenencia,rep_barrial,ptj_violencia,servicios_publicos,densidad) %>% summarise_all(mean)
+
+scat_spb_rb <- 
+  plot_scatter(comuna_scat,rep_barrial,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Reputación Barrial agrupados por Comuna",
+            axis.titles = c("Promedio de Reputación Barrial por Comuna","Promedio de Sentido de Pertenencia al Barrio por Comuna"))
+
+ggsave(scat_spb_rb,filename= "../3_output/graficos/scat_spb_rb.pdf")
+
+scat_spb_rb
+```
+
+```{r Scatter SPB y ptj de Violencia}
+scat_spb_pv <-
+  plot_scatter(comuna_scat,ptj_violencia,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y ptj de Violencia agrupados por Comuna",
+            axis.titles = c("Promedio de ptj de Violencia por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+
+ggsave(scat_spb_pv,filename= "../3_output/graficos/scat_spb_pv.pdf")
+
+scat_spb_pv
+```
+
+```{r Scatter SPB y Servicios Públicos}
+scat_spb_serv <-
+  plot_scatter(comuna_scat,servicios_publicos,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Acceso a Servicios Públicos agrupados por Comuna",
+            axis.titles = c("Promedio Acceso a Servicios Públicos por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+
+ggsave(scat_spb_serv,filename= "../3_output/graficos/scat_spb_serv.pdf")
+
+scat_spb_serv
+```
+
+```{r Scatter SPB y Nivel de Densidad Poblacional, fig.height=600, fig.width=800, paged.print=FALSE}
+scat_spb_dens <- 
+  plot_scatter(comuna_scat,densidad,sentido_pertenencia,
+            dot.labels = to_label(comuna_scat$comuna),
+            fit.line = "lm",
+            show.ci = TRUE,
+            title = "Gráfico de dispersión para los promedios de Sentido de Pertenencia y Densidad Poblacional agrupados por Comuna",
+            axis.titles = c("Promedio de Densidad Poblacional por Comuna","Promedio de Sentido de Pertenencia por Comuna"))
+
+ggsave(scat_spb_dens,filename= "../3_output/graficos/scat_spb_dens.pdf")
+
+scat_spb_dens
+```

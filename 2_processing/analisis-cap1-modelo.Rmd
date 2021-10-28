@@ -3,73 +3,88 @@ title: "Código de Análisis de Datos"
 output: html_document
 ---
 
-```{r Ajustes de Markdown,include=FALSE}
+```{r ajuste-markdown,include=FALSE}
 knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 options(scipen=999)
-rm(list=ls())
 options(knitr.kable.NA = '')
 ```
 
 ```{r Cargar paquetes, include=FALSE}
-pacman::p_load(ggplot2, #gráficos
-               lme4, #multinivel
-               texreg, #tabla de regresión
-               sjmisc, 
-               dplyr,
-               sjPlot,
-               jtools,
-               stargazer,
-               webshotl,
-               ggeffects)
+library(tidyverse)
+library(broom)
+library(texreg)
+library(stargazer)
+library(MuMIn)
+library(caret)
+library(corrplot)
+library(sjPlot)
 ```
 
-```{r Cargar base de datos procesada, include=FALSE}
-getwd()
-load("../1_input/data/procesada/elsoc_barrio_ind.RData")
-names(elsoc_barrio_ind)
-sapply(elsoc_barrio_ind, class)
-#View(elsoc_barrio_ind)
+```{r load-dataset-proc, include=FALSE}
+rm(list=ls())
+load("../1_input/data/procesada/elsoc.RData")
+sapply(elsoc, class)
+#View(elsoc)
 ```
 
-```{r Descriptivos variables}
-stargazer(elsoc_barrio_ind,type = "text")
+```{r descriptivos-var}
+stargazer(subset(elsoc, select = apbi:time), type = "text")
 ```
 
-```{r Modelo de regresión multivariada}
-##----Modelo general
+```{r correlacion-var}
+corr_elsoc <- elsoc %>% 
+    select(apbi, soci, cnfi, cfli, acci, geni, desi, time) 
+
+tab_corr(corr_elsoc, triangle = "lower", digits = 2)
+```
+
+```{r ajuste-modelos}
+options(na.action = "na.omit")
 
 #modelo con factores sociodemográficos
-reg1=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio , data=elsoc_barrio_ind)
-#modelo agrega factores sociales
-reg2=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio, data=elsoc_barrio_ind)
-#modelo agrega factores físicos
-reg3=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion, data=elsoc_barrio_ind)
+mod1 <- lm(apbi ~ sexo + edad + educ + essu + regi + time , data = elsoc)
+#modelo con factores sociales
+mod2 <- lm(apbi ~ soci + cnfi + segu + cfli, data = elsoc)
+#modelo con factores físicos
+mod3 <- lm(apbi ~ acci + geni, data = elsoc)
 #modelo agrega factores simbólicos
-reg4=lm(spb_index ~ sexo + edad + educacion + estatus + regi_viv + tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + molestias_barrio + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
+mod4 <- lm(apbi ~ repb + desi, data = elsoc)
+#modelo con factores sociodemográficos + sociales
+mod5 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli, data = elsoc)
+#modelo con  factores sociodemográficos + sociales + físicos
+mod6 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli + acci + geni, data = elsoc)
+#modelo con  factores sociodemográficos + sociales + físicos + simbólicos
+mod7 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli + acci + geni + repb + desi, data = elsoc)
+#modelo integrado
+#mod8 <- lm(apbi ~ time + soci + cnfi + segu + acci + geni + repb + desi, data = elsoc)
 
-screenreg(list(reg1,reg2,reg3,reg4))
-
-##----Modelo parsimonioso/acotado
-reg5=lm(spb_index ~ tiempo_barrio + sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
-
-screenreg(list(reg4,reg5))
-screenreg(reg5)
-
-#reg6=lm(spb_index ~  sociabilidad + conf_vecinos + sent_seguridad + satisf_gobarrio + exp_gentrificacion + repb + est_vida_des, data=elsoc_barrio_ind)
-#screenreg(list(reg5,reg6))
-
-#R2
-#sin tiempo_barrio de 0.48 a 0.46 
-#sin dim social de 0.48 a 0.33  
-#sin dim física de 0.48 a 0.45
-#sin dim simbólica de 0.48 a 0.46 
+screenreg(list(mod1,mod2,mod3,mod4,mod5,mod6,mod7))
 ```
 
+```{r comparativa-modelos}
+#comparativa modelos con MuMIn
+models <- model.sel(list(mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8))
+View(models)
+```
 
+```{r modelo-global}
+elsoc_glob <- elsoc %>% 
+    select(-idencuesta, -comuna, -comuna_cod, -apbr) %>% 
+    drop_na()
+modg <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli + acci + geni + repb + desi, data = elsoc_glob) #modelo general sin NA
 
+options(na.action = "na.fail")
+
+selected <- dredge(modg, m.lim = c(0, 15)) #itera combinaciones de modelos y rankea x AICc
+View(selected)
+subselected <- subset(selected, delta <= 2) #nos deja los mejores modelos (en este caso son 5)
+
+bestmodel <- get.models(selected, 1)[[1]] #extrae el mejor modelo
+screenreg(bestmodel)
+```
 ```{r Tabla modelo general }
-htmlreg(list(reg1,reg2,reg3,reg4), file = "../3_output/tablas/int_model_cap1.doc",
+htmlreg(list(mod1,mod2,mod3,mod4), file = "../3_output/tablas/int_model_cap1.doc",
     custom.model.names = c("Modelo 1","Modelo 2","Modelo 3", "Modelo 4"), #nombres modelos
     custom.coef.names = c("Intercepto","Mujer","30 a 49 años","50 a 64 años",">65 años", #sexo y edad
                           "Media","Técnica","Universitaria", "Clase Media","Clase Alta", #clase social
@@ -79,8 +94,9 @@ htmlreg(list(reg1,reg2,reg3,reg4), file = "../3_output/tablas/int_model_cap1.doc
                           "Ni Estigmatizado Ni Prestigioso","Prestigioso","Deseabilidad Estilos de Vida"), #dim simbólica
     digits=2)
 ```
+
 ```{r Tabla modelo integral}
-htmlreg(list(reg5), file = "../3_output/tablas/pars_model_cap1.doc",
+htmlreg(list(mod5), file = "../3_output/tablas/pars_model_cap1.doc",
     custom.model.names = c("Modelo Integral"), #nombres modelos
     custom.coef.names = c("Intercepto","Tiempo de residencia", # tiempo residencia
                           "Sociabilidad","Confianza en Vecinos","Ni seguro ni inseguro","Experiencia de seguridad", #dim social
@@ -91,7 +107,7 @@ htmlreg(list(reg5), file = "../3_output/tablas/pars_model_cap1.doc",
 
 # Linealidad
 ```{r}
-plot(reg5, 1)
+plot(bestmodel, 1)
 
 #SE CUMPLE
 ```
@@ -99,39 +115,40 @@ plot(reg5, 1)
 # Normalidad de residuos
 
 ```{r}
-plot(reg5, 2)
+plot(bestmodel, 2)
 
-shapiro.test(reg5$residuals)
+shapiro.test(bestmodel$residuals)
 
 #SE CUMPLE
 ```
 # Homocedasticidad
 
 ```{r}
-plot(reg5, 3)
+plot(bestmodel, 3)
 
 library(car)
-ncvTest(reg5)
+ncvTest(bestmodel)
 
 #install.packages("lmtest")
 library(lmtest)
-bptest(reg5)
+bptest(bestmodel)
 #NO SE CUMPLE
 ```
 # Multicolinealidad
 ```{r}
-car::vif(reg5)
+car::vif(bestmodel)
 
 #SE CUMPLE
 ```
 # Casos influyentes
 
 ```{r}
-plot(reg5, 4)
-plot(reg5, 5)
+plot(bestmodel, 4)
+plot(bestmodel, 5)
 
-elsoc_barrio_ind$cook <- cooks.distance(reg5)
-which(elsoc_barrio_ind$cook > 1)
+elsoc_sub <- elsoc %>% drop_na()
+elsoc_sub$cook <- cooks.distance(bestmodel)
+which(elsoc_sub$cook > 1)
 
 #SE CUMPLE
 ```

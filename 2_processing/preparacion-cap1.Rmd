@@ -14,6 +14,7 @@ options(knitr.kable.NA = '')
 ```{r Librerías}
 library(tidyverse)
 library(psych)
+library(sjmisc)
 ```
 
 ```{r Load dataset}
@@ -25,8 +26,8 @@ load("../1_input/data/original/elsoc-w01-dv/ELSOC_W01_V4.01_R.RData") #base de d
 elsoc_gs <- elsoc_2016 %>% 
   filter(estrato == 1) %>% 
   dplyr::select(idencuesta, estrato, comuna, comuna_cod, #ids
-         t01:t11_04, #variables territoriales
-         m0_sexo, m0_edad, m01, d01_01, m33, m34_03, c12_01) #sociodemográficas
+                t01:t11_04, #variables territoriales
+                m0_sexo, m0_edad, m01, d01_01, m33, m34_03, c12_01, m29, m30, nhogar1) #sociodemográficas
 
 elsoc_gs[elsoc_gs == -888 | elsoc_gs == -999] <- NA
 ```
@@ -42,17 +43,17 @@ elsoc_gs <- elsoc_gs %>%
          soci = (t03_01 + t03_02 + t03_03 + t03_04)/4,
          cnfi = t01,
          segu = factor(car::recode(t10, "1:2=1;3=2;4:5=3"),
-                           labels = c("Experiencia de inseguridad",
-                                      "Ni seguro ni inseguro",
-                                      "Experiencia de seguridad")),
+                           labels = c("Inseguro",
+                                      "Neutro",
+                                      "Seguro")),
          cfli = (t11_01 + t11_02 + t11_03 + t11_04)/4,
          acci = (t06_02 + t06_05 + t06_06 + t06_07)/4,
          geni = (t04_02 + t04_03 + t04_04)/3,
          desi = (t04_06 + t04_07)/2,
          repb = factor(car::recode(t08, "1:2=1;3=2;4:5=3"),
-                             labels = c("Estigmatizado",
-                                        "Ni Estigmatizado Ni Prestigioso", 
-                                        "Prestigioso")),
+                             labels = c("Negativa",
+                                        "Neutra", 
+                                        "Positiva")),
          #-----Recode Controles: Variables socio-demográficas
          sexo = factor(m0_sexo, labels = c('Hombre', 'Mujer')),
          edad = factor(car::recode(m0_edad, "18:29=1; 30:49=2; 50:64=3; 65:150=4"),
@@ -67,7 +68,6 @@ elsoc_gs <- elsoc_gs %>%
                            labels = c('Propietario','No propietario')),
          time = scales::rescale(m34_03, to = c(1,5)))
 
-
 #Etiqueta Y:
 attr(elsoc_gs$apbi,'label') <- 'Apego Barrial (Indice)'
 attr(elsoc_gs$apbr,'label') <- 'Apego Barrial (Escala)'
@@ -81,7 +81,7 @@ attr(elsoc_gs$geni,'label') <- 'Encarecimiento urbano'
 attr(elsoc_gs$desi,'label') <- 'Deseabildiad social'
 attr(elsoc_gs$repb,'label') <- 'Reputación barrial'
 #Etiqueta controles:
-attr(elsoc_gs$sexo,'label') <- 'Sexo'
+attr(elsoc_gs$sexo,'label') <- 'Sexo/Género'
 attr(elsoc_gs$edad,'label') <- 'Tramo etario'
 attr(elsoc_gs$educ,'label') <- 'Nivel educacional'
 attr(elsoc_gs$essu,'label') <- 'Estatus social subjetivo'
@@ -93,26 +93,25 @@ attr(elsoc_gs$time,'label') <- 'Tiempo de residencia'
 ```{r Validación de índices}
 tabla_apbi <- dplyr::select(elsoc_gs, t02_01, t02_02, t02_03, t02_04)
 #alpha(tabla_apbi) #0.88
-
 tabla_soci <- dplyr::select(elsoc_gs, t03_01, t03_02, t03_03, t03_04)
 #alpha(tabla_soci) #0.81
-
 tabla_cfli <- dplyr::select(elsoc_gs, t11_01, t11_02, t11_03, t11_04)
 #alpha(tabla_cfli) #0.67
-
 tabla_acci <- dplyr::select(elsoc_gs, t06_02, t06_05, t06_06, t06_07)
 #alpha(tabla_acci) #0,71
-
 tabla_geni <- dplyr::select(elsoc_gs, t04_02, t04_03, t04_04)
 #alpha(tabla_geni) #0.62
-
 tabla_desi <- dplyr::select(elsoc_gs, t04_06, t04_07)
 #alpha(tabla_desi) #0.71
 ```
 
 ```{r Save dataset para análisis}
-#guardamos base de datos procesada con el fin de analizarla 
-save(elsoc_gs, file = "../1_input/data/procesada/elsoc_gs.RData")
+elsoc <- elsoc_gs %>%
+  select(idencuesta, comuna, comuna_cod, 
+         apbi, apbr, soci, cnfi, segu, cfli, acci, geni, desi, repb, 
+         sexo, edad, educ, essu, jjvv, regi, time)
+
+save(elsoc, file = "../1_input/data/procesada/elsoc.RData")
 ```
 
 ```{r Informacion de sesión}
