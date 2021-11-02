@@ -32,6 +32,21 @@ sapply(elsoc, class)
 stargazer(subset(elsoc, select = apbi:time), type = "text")
 ```
 
+```{r validación-índices}
+alpha_apbi <- alpha(dplyr::select(elsoc_gs, t02_01, t02_02, t02_03, t02_04)) 
+#0.88
+alpha_soci <- alpha(dplyr::select(elsoc_gs, t03_01, t03_02, t03_03, t03_04))
+#0.81
+alpha_cfli <- alpha(dplyr::select(elsoc_gs, t11_01, t11_02, t11_03, t11_04))
+#0.67
+alpha_acci <- alpha(dplyr::select(elsoc_gs, t06_02, t06_05, t06_06, t06_07))
+#0,71
+alpha_geni <- alpha(dplyr::select(elsoc_gs, t04_02, t04_03, t04_04))
+#0.62
+alpha_desi <- alpha(dplyr::select(elsoc_gs, t04_06, t04_07))
+#0.71
+```
+
 ```{r correlacion-var}
 corr_elsoc <- elsoc %>% 
     select(apbi, soci, cnfi, cfli, acci, geni, desi, time) 
@@ -56,8 +71,6 @@ mod5 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu +
 mod6 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli + acci + geni, data = elsoc)
 #modelo con  factores sociodemográficos + sociales + físicos + simbólicos
 mod7 <- lm(apbi ~ sexo + edad + educ + essu + regi + time + soci + cnfi + segu + cfli + acci + geni + repb + desi, data = elsoc)
-#modelo integrado
-#mod8 <- lm(apbi ~ time + soci + cnfi + segu + acci + geni + repb + desi, data = elsoc)
 
 screenreg(list(mod1,mod2,mod3,mod4,mod5,mod6,mod7))
 ```
@@ -82,6 +95,9 @@ subselected <- subset(selected, delta <= 2) #nos deja los mejores modelos (en es
 
 bestmodel <- get.models(selected, 1)[[1]] #extrae el mejor modelo
 screenreg(bestmodel)
+
+#es lo mismo que:
+#mod8 <- lm(apbi ~ time + soci + cnfi + segu + acci + geni + repb + desi, data = elsoc)
 ```
 ```{r Tabla modelo general }
 htmlreg(list(mod1,mod2,mod3,mod4), file = "../3_output/tablas/int_model_cap1.doc",
