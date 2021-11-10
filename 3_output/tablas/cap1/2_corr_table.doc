@@ -1,0 +1,105 @@
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">&nbsp;</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Apego Barrial</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Sociabilidad barrial</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Confianza en vecinos</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Molestias vecinales</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Accesibilidad barrial</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Encarecimiento barrial</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Deseabildiad social</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Tiempo de residencia</th>
+</tr>
+<tr>
+<td style="font-style:italic;">Apego Barrial</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Sociabilidad barrial</td>
+<td style="padding:0.2cm; text-align:center;">0.55<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Confianza en vecinos</td>
+<td style="padding:0.2cm; text-align:center;">0.46<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.46<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Molestias vecinales</td>
+<td style="padding:0.2cm; text-align:center;">-0.27<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">-0.19<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">-0.27<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Accesibilidad barrial</td>
+<td style="padding:0.2cm; text-align:center;">0.42<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.31<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.21<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">-0.28<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Encarecimiento barrial</td>
+<td style="padding:0.2cm; text-align:center;">0.22<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.22<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.16<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">0.04<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center;">0.24<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Deseabildiad social</td>
+<td style="padding:0.2cm; text-align:center;">0.22<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.11<span style="vertical-align:super;font-size:0.8em;">**</span></td>
+<td style="padding:0.2cm; text-align:center;">0.21<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">-0.30<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">0.07<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center;">-0.12<span style="vertical-align:super;font-size:0.8em;">**</span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="font-style:italic;">Tiempo de residencia</td>
+<td style="padding:0.2cm; text-align:center;">0.24<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.14<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center;">0.14<span style="vertical-align:super;font-size:0.8em;">***</span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">-0.03<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">0.03<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">-0.01<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">-0.04<span style="vertical-align:super;font-size:0.8em;"></span></td>
+<td style="padding:0.2cm; text-align:center;">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="9" style="border-bottom:double black; border-top:1px solid black; font-style:italic; font-size:0.9em; text-align:right;">Computed correlation used pearson-method with listwise-deletion.</td>
+</tr>
+ 
+</table>

@@ -12,37 +12,37 @@
 <tbody>
 <tr style="border-top: 1px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">Intercepto</td>
-<td style="padding-left: 5px;padding-right: 5px;">2.63<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">1.13<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.10</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.26</td>
+<td style="padding-left: 5px;padding-right: 5px;">2.66<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">1.18<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.21</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.13</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.15)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.19)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.24)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.26)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.13)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.17)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.23)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.25)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Mujer</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.06</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.07</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.03</td>
 <td style="padding-left: 5px;padding-right: 5px;">-0.01</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.01</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.00</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.00</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.06)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.05)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.05)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.05)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">30 a 49 años</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.29<sup>**</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.11</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.08</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.24<sup>**</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.10</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.07</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.04</td>
 </tr>
 <tr>
@@ -54,52 +54,52 @@
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">50 a 64 años</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.27<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.10</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.04</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.24<sup>*</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.13</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.03</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.02</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.11)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.09)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">>65 años</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.55<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.25<sup>*</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.49<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.31<sup>**</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.20</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.13</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.15</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.13)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.11)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.11)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.12)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Media</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.15</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.03</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.13</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.05</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.02</td>
 <td style="padding-left: 5px;padding-right: 5px;">-0.01</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.09)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Técnica</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.24<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.08</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.04</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.01</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.21</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.09</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.02</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.02</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -110,9 +110,9 @@
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Universitaria</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.12</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.07</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.10</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.14</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.04</td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.11</td>
 <td style="padding-left: 5px;padding-right: 5px;">-0.16</td>
 </tr>
 <tr>
@@ -124,37 +124,37 @@
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Clase Media</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.22<sup>**</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.14<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.13<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.11</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.37<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.19<sup>**</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.15<sup>*</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.13</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.06)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.06)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.06)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Clase Alta</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.35<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.23<sup>*</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.19</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.14</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.48<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.27<sup>**</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.22<sup>*</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.19<sup>*</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.13)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.11)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.11)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.10)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.09)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.09)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.09)</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">No propietario</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.04</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.05</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.05</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.02</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.01</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.02</td>
 </tr>
 <tr>
@@ -166,23 +166,23 @@
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Tiempo de residencia</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.19<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.12<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.13<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.15<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.01<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.01<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.01<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.01<sup>***</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.03)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.03)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.00)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.00)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.00)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.00)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Sociabilidad</td>
+<td style="padding-left: 5px;padding-right: 5px;">Sociabilidad barrial</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.43<sup>***</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.36<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.44<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.35<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.36<sup>***</sup></td>
 </tr>
 <tr>
@@ -195,7 +195,7 @@
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Confianza en Vecinos</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.12<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.11<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.12<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.10<sup>***</sup></td>
 </tr>
@@ -207,23 +207,23 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.03)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Ni seguro ni inseguro</td>
+<td style="padding-left: 5px;padding-right: 5px;">Neutro</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.26<sup>**</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.25<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.21<sup>**</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.14</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.15<sup>*</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Experiencia de seguridad</td>
+<td style="padding-left: 5px;padding-right: 5px;">Seguro</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.38<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.36<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.33<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.22<sup>**</sup></td>
 </tr>
@@ -235,7 +235,7 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">conflictividad vecinal</td>
+<td style="padding-left: 5px;padding-right: 5px;">Molestias vecinales</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">-0.08<sup>*</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">-0.05</td>
@@ -244,15 +244,15 @@
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
+<td style="padding-left: 5px;padding-right: 5px;">(0.03)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.03)</td>
 <td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Satisfacción con Accesibilidad</td>
+<td style="padding-left: 5px;padding-right: 5px;">Accesibilidad barrial</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.25<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.26<sup>***</sup></td>
 <td style="padding-left: 5px;padding-right: 5px;">0.22<sup>***</sup></td>
 </tr>
 <tr>
@@ -263,7 +263,7 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Percepción de encarecimiento</td>
+<td style="padding-left: 5px;padding-right: 5px;">Encarecimiento barrial</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.10<sup>*</sup></td>
@@ -277,11 +277,11 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.04)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Ni Estigmatizado Ni Prestigioso</td>
+<td style="padding-left: 5px;padding-right: 5px;">Neutra</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.19<sup>*</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.18<sup>*</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -291,11 +291,11 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.08)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Prestigioso</td>
+<td style="padding-left: 5px;padding-right: 5px;">Positiva</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.30<sup>***</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.29<sup>***</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -305,7 +305,7 @@
 <td style="padding-left: 5px;padding-right: 5px;">(0.07)</td>
 </tr>
 <tr>
-<td style="padding-left: 5px;padding-right: 5px;">Deseabilidad Estilos de Vida</td>
+<td style="padding-left: 5px;padding-right: 5px;">Deseabilidad social</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -320,24 +320,24 @@
 </tr>
 <tr style="border-top: 1px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">R<sup>2</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.11</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.43</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.13</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.44</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.48</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.50</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Adj. R<sup>2</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.10</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.42</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.11</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.43</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.46</td>
 <td style="padding-left: 5px;padding-right: 5px;">0.48</td>
 </tr>
 <tr style="border-bottom: 2px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">Num. obs.</td>
-<td style="padding-left: 5px;padding-right: 5px;">621</td>
-<td style="padding-left: 5px;padding-right: 5px;">621</td>
-<td style="padding-left: 5px;padding-right: 5px;">621</td>
-<td style="padding-left: 5px;padding-right: 5px;">621</td>
+<td style="padding-left: 5px;padding-right: 5px;">714</td>
+<td style="padding-left: 5px;padding-right: 5px;">691</td>
+<td style="padding-left: 5px;padding-right: 5px;">635</td>
+<td style="padding-left: 5px;padding-right: 5px;">624</td>
 </tr>
 </tbody>
 <tfoot>

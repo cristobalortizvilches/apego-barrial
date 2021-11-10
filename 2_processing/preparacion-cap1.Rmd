@@ -31,10 +31,12 @@ elsoc_gs <- elsoc_2016 %>%
                 m0_sexo, m0_edad, m01, d01_01, m33, m34_03, c12_01, m29, m30, nhogar1) #sociodemográficas
 
 elsoc_gs[elsoc_gs == -888 | elsoc_gs == -999] <- NA
+frq(elsoc_gs$t04_07)
 ```
 
 ```{r manipulacion-variables}
-elsoc_gs <- elsoc_gs %>%
+elsoc_gs <- elsoc_gs %>% 
+  remove_all_labels() %>% 
          #-----Recode Y: Apego al barrio
   mutate(apbi = (t02_01 + t02_02 + t02_03 + t02_04)/4) %>% 
   mutate(apbr = factor(case_when(apbi < 2 ~ 1, apbi < 3 ~ 2,
@@ -50,7 +52,8 @@ elsoc_gs <- elsoc_gs %>%
          cfli = (t11_01 + t11_02 + t11_03 + t11_04)/4,
          acci = (t06_02 + t06_05 + t06_06 + t06_07)/4,
          geni = (t04_02 + t04_03 + t04_04)/3,
-         desi = (t04_06 + t04_07)/2,
+         desi = (car::recode(t04_06, "1=5;2=4;3=3;4=2;5=1") 
+                 + car::recode(t04_07, "1=5;2=4;3=3;4=2;5=1"))/2,
          repb = factor(car::recode(t08, "1:2=1;3=2;4:5=3"),
                              labels = c("Negativa",
                                         "Neutra", 
@@ -67,7 +70,7 @@ elsoc_gs <- elsoc_gs %>%
                                          'Miembro activo')),
          regi = factor(car::recode(m33, "1:2=0;3:7=1"),
                            labels = c('Propietario','No propietario')),
-         time = scales::rescale(m34_03, to = c(1,5))) %>% 
+         time = m34_03) %>% 
          #-----Etiqueta variables
   var_labels(apbi = "Apego Barrial",
              apbr = "Apego Barrial",
@@ -75,8 +78,8 @@ elsoc_gs <- elsoc_gs %>%
              cnfi = "Confianza en vecinos",
              segu = 'Seguridad barrial',
              cfli = 'Molestias vecinales',
-             acci = 'Satisfacción con accesibilidad',
-             geni = 'Encarecimiento urbano',
+             acci = 'Accesibilidad barrial',
+             geni = 'Encarecimiento barrial',
              desi = 'Deseabildiad social',
              repb = 'Reputación barrial',
              sexo = 'Sexo/Género',
@@ -85,7 +88,9 @@ elsoc_gs <- elsoc_gs %>%
              essu = 'Estatus social subjetivo',
              jjvv = 'Afiliación junta de vecinos',
              regi = 'Régimen de propiedad vivienda',
-             time = 'Tiempo de residencia')
+             time = 'Tiempo de residencia') 
+
+elsoc_gs$time[elsoc_gs$time == 80] <- 75 #imputamos valor sospechosos manualmente
 ```
 
 ```{r save-dataset}
