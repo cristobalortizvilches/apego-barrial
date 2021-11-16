@@ -7,7 +7,7 @@
 <th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Molestias vecinales</th>
 <th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Accesibilidad barrial</th>
 <th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Encarecimiento barrial</th>
-<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Deseabildiad social</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Deseabilidad social</th>
 <th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">Tiempo de residencia</th>
 </tr>
 <tr>
@@ -77,7 +77,7 @@
 <td style="padding:0.2cm; text-align:center;">&nbsp;</td>
 </tr>
 <tr>
-<td style="font-style:italic;">Deseabildiad social</td>
+<td style="font-style:italic;">Deseabilidad social</td>
 <td style="padding:0.2cm; text-align:center;">0.22<span style="vertical-align:super;font-size:0.8em;">***</span></td>
 <td style="padding:0.2cm; text-align:center;">0.11<span style="vertical-align:super;font-size:0.8em;">**</span></td>
 <td style="padding:0.2cm; text-align:center;">0.21<span style="vertical-align:super;font-size:0.8em;">***</span></td>
