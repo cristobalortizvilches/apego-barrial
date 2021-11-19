@@ -2,8 +2,8 @@
 title: "Determinantes del apego barrial en el Área Metropolitana de Santiago de Chile:"
 subtitle: "de la segregación residencial a la experiencia urbana situada"  
 author: 
-  - "Cristóbal Ortiz Viches"
-institute: "Laboratorio de Sociología Territorial, FACSO UCH <br> Ex-practicante ELSOC-COES"
+  - "Cristóbal Ortiz Viches <br> Laboratorio de Sociología Territorial, FACSO UCH"
+institute: "Mesa: Cohesión social y barrios / Eje: Desigualdad socio-espacial y cohesión urbana <br> VIII Conferencia Internacional COES: Cohesión Social en Tiempos Turbulentos" 
 date: '17 noviembre 2021'
 output:
   xaringan::moon_reader:
@@ -58,38 +58,63 @@ class: inverse, center, middle
 
 ---
 
-# Problema de investigación
+## Problema de investigación
 
 --
 
-### A. AMS ciudad fragmentada y desigual 
+### A. AMS ciudad fragmentada y desigual:
+
+--
+
   -  Problemas de cohesión social a escala barrio.
+    - problemas de apego al barrio: vínculo afectivo entre persona y lugar residencial (Scannel & Gifford, 2010)
 
 --
 
-### B. Hipótesis principal: segregación residencial desencadena mecanismos que terminan por guetizar barrios (Sabatini y colaboradores).
+### B. Hipótesis principal (ecológica): 
 
-  - Segregación residencial explica el por qué de muchos males sociales en el AMS.
-  - Cohesión sería un epifenómeno de dinámicas socio-espaciales mayores: segregación residencial.
- 
+--
+
+#### Segregación residencial a gran escala desencadena mecanismos que pueden causar _desintegración social_ y _desapego territorial_  (Sabatini et al. 2001; 2010).
+
+--
+
+  > Esfera política: detras de políticas públicas de mixtura social en el espacial.
+
+--
+
+  > Esfera científica: cohesión social dependería en último término de dinámicas socio-espaciales mayores o de mayor agregación (**efecto barrio o de lugar**).
+
+--
+  
+### ¿Por qué esta explicación del apego resulta insuficiente?
+  
 ---
 
 class: middle right inverse
-background-image: url('../ponencia-coes/seg-ams.jpg')
-background-size: 650px
+background-image: url('../ponencia-coes/gse-ams.png')
+background-size: 450px
 background-position: 10% 50%
 
 --
 
-### Segregación clase baja ~ <br> (-) k social ~ (-) apego
+### Segregación clase baja ~ (-) k social ~ (-) apego
 
 --
 
-### Segregación clase alta ~ <br> (+) k social ~ (+) apego
+### Segregación clase alta ~ (+) k social ~ (+) apego
 
 --
 
-### PERO: Hipótesis ecológica oculta<br>mecanismos explicativos del apego
+### PERO, hipótesis ecológica... 
+
+--
+
+#### ... oculta mecanismos explicativos que generan <br> los problemas sociales (Ruiz-Tagle & López, 2014)
+
+--
+
+#### ... ignora la vivencia y significación del espacio urbano <br> (Jirón et al. 2010)
 
 --
 
@@ -97,7 +122,7 @@ background-position: 10% 50%
 
 --
 
-### **¿Cómo surge el <br> apego al barrio?**
+### **¿Cómo surge el apego al barrio?**
 
 ---
 
@@ -107,55 +132,66 @@ class: inverse, center, middle
 
 ---
 
-## Estado del arte: antecedentes conceptuales
+## Antecedentes empíricos: ¿cómo surge el apego?
 
-1. Apego al barrio: _vínculo afectivo entre persona y lugar residencial_
-
-  > nivel de pertenencia que la persona siente hacia el barrio
+####  1. Abordajes parcelados/indirectos
 
 --
 
-2. Experiencia de habitar: _vivencia significativa del espacio_
-  > evaluación del lugar residencial en cuanto a su capacidad de brindar un buen vivir(...)
+- socio-demográficas ~ apego (Comstock et al., 2010; Angelcos & Méndez, 2017)
+- socio-relacionales ~ apego (Luneke, 2016; COES., 2017)
+- físico-espaciales ~ apego (Greene et al., 2014; Angelcos & Méndez, 2016)
+- simbólico-valóricas ~ apego (Elorza, 2019; Rasse & Lin, 2020)
 
 --
 
-  2.1. dimensión social
-  > (...) respecto a las pautas de interacción social situadas en el barrio.
-  
---
-
-  2.2 dimensión física
-  > (...) respecto a la localización accesible del barrio a bienes y servicios.
+#### 2. Abordajes sistemáticos/directos
 
 --
 
-  2.3 dimensión simbólica 
-  > (...) respecto a distinciones conceptuales que categorizan al barrio.
+- minoritarios, se basan en la _**satisfacción residencial**_ (Ramkissoon y Mavondo, 2015; Mao et al., 2015). 
+  - (+) satisfacción residencial $\to$ (+) apego barrial
+  - el apego es explicado por **evaluaciones** del lugar residencial.
+
+--
+
+#### 3. Problemas de los abordajes
+
+--
+
+- Parcelados **no explican el apego**, a lo sumo correlacionan sin controlar efectos.
+- Indirectos tratan el apego como **epifenómeno**.
+- Sistemáticos **desconocen dimensiones** relevantes (e.g. simbólica).
+- La mayoría de las veces no **comparan hipótesis rivales**.
 
 ---
 
-## Estado del arte: antecedentes empíricos
+## Antecedentes conceptuales: 
 
-### Abordajes parcelados
+1. **Apego al barrio**: _vínculo afectivo entre persona y lugar residencial_ (Scannel & Gifford, 2010)
 
-- socio-demográficas ~ apego
-- socio-relacionales ~ apego
-- físico-espaciales ~ apego
-- simbólico-valóricas ~ apego
+  > nivel de pertenencia que la persona siente hacia el barrio (Bonaiuto, 2004; Schieffer & Van der Noll, 2016)
 
-### Abordajes sistemáticos
+--
 
-- no son muy numerosos, se basan en el constructo _**satisfacción residencial**_ (Bonaiuto)
-  - (+) satisfacción residencial $\to$ (+) apego barrial
+2. **Experiencia de habitar**: _vivencia significativa del territorio_ (Campos & Ojeda, 2020)
+  > evaluación del lugar residencial en cuanto a su capacidad de brindar un buen vivir (Campos & Yávar, 2004)
+
+--
+
+  2.1. dimensión social: pautas de interacción social situadas en el barrio.
   
-### Problemas de los abordajes
+--
 
-- Parcelados **no explican el apego**, a lo sumo correlacionan sin controlar efectos.
-- Parcelados tratan el apego como **epifenomeno**.
-- Sistemáticos **desconocen dimensiones** relevantes (e.g. simbólica).
-- Ninguno se enfoca en **comparar hipótesis rivales**.
+  2.2 dimensión física:  localización accesible del barrio a bienes y servicios.
 
+--
+
+  2.3 dimensión simbólica: distinciones conceptuales que categorizan al barrio.
+  
+--
+  
+#### <center> Habitar es un concepto amplio que permite agrupar determinantes del apego <br> y a la vez distinguirlos en función de las dimensiones del lugar. <center>
 
 ---
 
@@ -202,7 +238,7 @@ DT::datatable(openxlsx::read.xlsx("../variables.xlsx", sheet = 3), class = "hove
 
 # Procedimiento analítico
 
-### I. Regresión lineal múltiple
+### I. Regresión lineal múltiple (RLM)
 
 --
 
@@ -222,7 +258,11 @@ DT::datatable(openxlsx::read.xlsx("../variables.xlsx", sheet = 3), class = "hove
 
 --
 
-### II. Inferencia multi-modelo
+- **RLM permite control estadístico del efecto de los factores explicativos**
+
+--
+
+### II. Inferencia multi-modelo (IMM)
 
 --
 
@@ -240,7 +280,7 @@ class: inverse, center, middle
 
 ---
 
-# Modelo general
+# Comparación modelos (regresión lineal múltiple)
 
 ```{css, echo = F}
 table {
@@ -257,7 +297,7 @@ DT::datatable(openxlsx::read.xlsx("../3_output/tablas/cap1/tablas_cap1.xlsx", sh
 
 ---
 
-# Modelo parsimonioso
+# Modelo parsimonioso (inferencia multimodelo)
 
 ```{r echo=FALSE}
 tidy(lm(apbi ~ time + soci + cnfi + segu + acci + geni + repb + desi, data = elsoc), conf.int = TRUE) %>%
@@ -281,7 +321,9 @@ tidy(lm(apbi ~ time + soci + cnfi + segu + acci + geni + repb + desi, data = els
   theme_minimal()
 ```
 
-##### ${\rm ApB}_i={\beta_0 + [\beta_{16}*Time}] + [\ \beta_{21}*{\ Soci}+\ \beta_{22}*{\ Conf}\ + \beta_{23}*{\ Segu}\ ]+[\beta_{31}*{\ Acce}\ + \beta_{32}*{\ Enc}\ ] + [\beta_{41}*{\ Repb}\ + \beta_{42}*{\ Dess}\ ] + \varepsilon_i$
+--
+
+![](pars-model.png)
 
 ---
 
@@ -327,7 +369,7 @@ class: inverse, center, middle
 
 --
 
-  - es recomendable hacer **modelos integrales**, que no desconozcan dimensiones en favor de otras, sino que las distingan y luego incorporen en conceptos amplios como la experiencia de habitar el barrio. 
+  - es recomendable hacer **modelos integrales**, que no desconozcan dimensiones en favor de otras.
 
 --
 
@@ -335,7 +377,7 @@ class: inverse, center, middle
 
 --
 
-  - apego **no depende ni exclusiva ni principalmente de características socio-demográficas** del habitante. Ser "tal o cual persona" no tiene efecto significativo del apego en presencia de factores del habitar.
+  - apego **no depende ni exclusiva ni principalmente de características socio-demográficas** del habitante.
 
 --
 
@@ -353,6 +395,21 @@ class: inverse, center, middle
 
   - atributos del barrio no dejan de ser importantes, pero ellos no explican directamente el apego -> **¿efecto moderador?**
 
+---
+
+# Referencias
+
+```{css, echo = F}
+table {
+  font-size: 12px;     
+}
+```
+
+```{r echo = FALSE}
+DT::datatable(openxlsx::read.xlsx("referencias.xlsx", sheet = 1),
+              class = "hover",
+              options = list(pageLength = 9))
+```
 ---
 
 class: inverse, center, middle

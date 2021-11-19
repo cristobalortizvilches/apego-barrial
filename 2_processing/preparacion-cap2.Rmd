@@ -4,268 +4,138 @@ author: "Cristóbal Ortiz"
 date: "29-04-2021"
 output: html_document
 ---
-```{r Ajustes de Markdown,include=FALSE}
+
+```{r ajustes-markdown,include=FALSE}
 knitr::opts_chunk$set(warning = FALSE,message = FALSE, cache = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 options(scipen=999)
-rm(list=ls())
 options(knitr.kable.NA = '')
 ```
 
-```{r Librerías}
-pacman::p_load(dplyr, #Manipulacion de datos
-               stargazer, #Tablas
-               sjmisc, # Tablas
-               summarytools, # Tablas
-               kableExtra, #Tablas
-               sjPlot, #Tablas y gráficos
-               corrplot, # Correlaciones
-               sessioninfo, # Información de la sesión de trabajo
-               multilevel, #para alpha de cronbach
-               scales, #cambios en escalas de medición
-               sjlabelled, #etiquetamiento de variables
-               mice) #imputar NA 
+```{r load-librerias}
+library(tidyverse)
+library(openxlsx)
+library(sjmisc)
+library(sjlabelled)
+library(scales)
+```
+
+```{r load-dataset}
 getwd()
+remove(list = ls())
+load("../1_input/data/original/elsoc-w01-dv/ELSOC_W01_V4.01_R.RData") #base de datos ola 1
+cit_2016 <- read.xlsx("../1_input/data/original/cit-w01-dv/ELSOC_CIT_Dataset_2016.xlsx")
+
+#elsoc_cit_2016 <- merge(elsoc_2016, cit_2016, by="idencuesta", all.x = TRUE, all.y = TRUE)
+elsoc_cit_2016 <- dplyr::left_join(x = elsoc_2016, y = cit_2016, by = "idencuesta")
 ```
 
-```{r Cargar Base de datos}
-#load("1_input/data/original/ELSOC_W01_V4.00_R.RData") #base de datos ola 1
-load("../1_input/data/original/ELSOC_W01_CIT_v3.20_R.RData") #base de datos ola 1 + CIT
-```
-
-```{r Selección de variables: selección/filtrado/limpieza}
+```{r limpieza-dataset}
 #selección de variables
-sjmisc::frq(elsoc_2016a$c12_01)
-elsoc <- dplyr::select(elsoc_2016a,
-  idencuesta, urbe=estrato,comuna=comuna.x,distrito,zona,manzana, #identificadores individuales y geográficos
-  tiempo_barrio=m34_03, #sociodemográficas
-  barrio_ideal=t02_01,integrado_barrio=t02_02,sentido_comunidad=t02_03,sentido_lugar=t02_04, #apego barrial
-  amigable=t03_01,sociable=t03_02,cordial=t03_03,colaborador=t03_04, #sociabilidad
-  conf_vecinos=t01, prox_fam=t06_08, #capital social 
-  sent_seguridad=t10,satisf_seguridad=t06_01, # experiencia de inseguridad 
-  conect=t06_02,prox_trabajo=t06_05,prox_col=t06_06,prox_com=t06_07, #satisfacción c/ accesibilidad
-  rep_barrial=t08, #reputación barrial
-  res_desagradables=t04_06,act_desagradables=t04_07, #deseabilidad de estilos de vida (residentes y actividades)
-  nvl_esco=nivedzon,expo_hete=sdedzon,violencia=dviolzon, #entorno social zona
-  densidad=denszon,servicios_publicos=accszon, #entorno físico-espacial zona
-  nvl_esco_dto=niveddto,expo_hete_dto=sdeddto,violencia_dto=dvioldto, #entorno social distrito
-  densidad_dto=densdto,servicios_publicos_dto=accsdto) #entorno físico-espacial distrito
-
-
-#filtramos sólo para el conglomerado urbano de Santiago
-elsoc <- dplyr::filter(elsoc, urbe == 1)
+elsoc_gs <- elsoc_cit_2016 %>% 
+  filter(estrato == 1) %>% 
+  dplyr::select(idencuesta, #id individual
+                estrato, comuna.x, comuna_cod, manzana, zona, distrito, #id geográficos
+                t01:t11_04, m34_03, #variables modulo territorio
+                nived_zon, sded_zon, dviol_zon, dens_zon, accs_zon, #variables cit zona
+                nived_dto, sded_dto, dviol_dto, dens_dto, accs_dto, #variables cit distrito
+                nived_com) #variables cit comuna
 
 #convertimos no sabe/no responde a NA
-elsoc[elsoc == -888] <- NA
-elsoc[elsoc == -999] <- NA
+elsoc_gs[elsoc_gs == -888 | elsoc_gs == -999] <- NA
+```
 
-#view(dfSummary(elsoc))
+```{r manipulacion-variables}
+elsoc_gs <- elsoc_gs %>% 
+  remove_all_labels() %>%
+  #-----Recode Y: Apego al barrio
+  mutate(apbi = (t02_01 + t02_02 + t02_03 + t02_04)/4) %>% 
+  mutate(apbr = factor(case_when(apbi < 2 ~ 1, apbi < 3 ~ 2,
+                                 apbi < 4 ~ 3, apbi <= 5 ~ 4),
+                           labels = c('Muy Bajo', 'Bajo', 'Medio', 'Alto')),
+  #-----Recode Xi: Experiencia de habitar el barrio
+         soci = (t03_01 + t03_02 + t03_03 + t03_04)/4,
+         cnfi = t01,
+         segu = factor(car::recode(t10, "1:2=1;3=2;4:5=3"),
+                           labels = c("Baja",
+                                      "Media",
+                                      "Alta")),
+         acci = (t06_02 + t06_05 + t06_06 + t06_07)/4,
+         geni = (t04_02 + t04_03 + t04_04)/3,
+         desi = (car::recode(t04_06, "1=5;2=4;3=3;4=2;5=1") +
+                 car::recode(t04_07, "1=5;2=4;3=3;4=2;5=1"))/2,
+         repb = factor(car::recode(t08, "1:2=1;3=2;4:5=3"),
+                             labels = c("Negativa",
+                                        "Neutra", 
+                                        "Positiva")),
+  #-----Recode Controles: Variables socio-demográficas
+         time = m34_03) %>%
+  #-----Recode Zi escala Zona
+  group_by(zona) %>% 
+  mutate(repb_zon = mean(t08, na.rm = T),
+         apbi_zon = mean(apbi, na.rm = T)) %>% 
+  group_by(distrito) %>% 
+  mutate(repb_dto = mean(t08, na.rm = T),
+         apbi_dto = mean(apbi, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(nive_zon = rescale(nived_zon, to = c(1,5)),
+         sded_zon = rescale(sded_zon, to = c(1,5)),
+         viol_zon = rescale(dviol_zon, to = c(1,5)),
+         dens_zon = rescale(dens_zon, to = c(1,5)), 
+         accs_zon = rescale(accs_zon, to = c(1,5)), 
+         nive_dto = rescale(nived_dto, to = c(1,5)),
+         sded_dto = rescale(sded_dto, to = c(1,5)),
+         viol_dto = rescale(dviol_dto, to = c(1,5)), 
+         dens_dto = rescale(dens_dto, to = c(1,5)), 
+         accs_dto = rescale(accs_dto, to = c(1,5))) %>% 
+  #-----Etiqueta variables 
+  var_labels(
+    #Etiqueta Y
+    apbi = "Apego barrial",
+    apbr = "Apego Barrial",
+    apbi_zon = 'Apego barrial zona',
+    apbi_dto = 'Apego barrial distrito',
+    #Etiquetas Xi
+    soci = "Sociabilidad barrial", 
+    cnfi = "Confianza en vecinos",
+    segu = 'Seguridad barrial',
+    acci = 'Accesibilidad barrial',
+    geni = 'Encarecimiento barrial',
+    desi = 'Deseabilidad social',
+    repb = 'Reputación barrial',
+    time = 'Tiempo de residencia',
+    #Etiqueta Zi escala zona
+    repb_zon = 'Reputación zona',
+    nive_zon = 'Escolaridad zona',
+    sded_zon = 'Heterogeneidad zona',
+    viol_zon = 'Peligrosidad zona',
+    dens_zon = 'Densidad zona',
+    accs_zon = 'Accesibilidad zona',
+    #Etiqueta Zi escala distrito
+    repb_dto = 'Reputación distrito',
+    nive_dto = 'Escolaridad distrito',
+    sded_dto = 'Heterogeneidad distrito',
+    viol_dto = 'Peligrosidad distrito',
+    dens_dto = 'Densidad distrito', 
+    accs_dto = 'Accesibilidad distrito',
+    #Etiqueta variable comunal
+    nived_com = 'Escolaridad comuna') %>% 
+  filter(comuna.x != "Vitacura") #filtramos comuna con N muy bajo Vitacura N=1
 
-#eliminar NA (de imputar no es necesaria esta df)
-sum(is.na(elsoc))
-elsoc <- na.omit(elsoc)
+elsoc_gs$time[elsoc_gs$time == 80] <- 75 #imputamos valor sospechoso 
+elsoc_gs$time[elsoc_gs$time == 0] <- 1 #imputamos valor para redondear
 ```
 
 
-```{r Manipulación de variable Y}
-#----Construcción Y: Apego al barrio
-##----índice de apego barrial
-elsoc$spb_index <- ((elsoc$barrio_ideal + elsoc$integrado_barrio + elsoc$sentido_comunidad + elsoc$sentido_lugar)/4)
+```{r save-dataset}
+elsoc_entorno <- elsoc_gs %>% 
+  select(idencuesta, estrato, comuna.x, comuna_cod, manzana, zona, distrito,
+         apbi, apbr, soci, cnfi, segu, acci, geni, desi, repb, time,
+         repb_zon, nive_zon, sded_zon, viol_zon, dens_zon, accs_zon,
+         repb_dto, nive_dto, sded_dto, viol_dto, dens_dto, accs_dto,
+         nived_com)
 
-elsoc$spb_index <- set_label(x = elsoc$spb_index, label = "Indice de Sentido de pertenencia al barrio")
-
-##----niveles de apego barrial (para hacer mapa)
-elsoc$spb_rec <- factor(with(elsoc, case_when(spb_index < 2 ~ 1,
-                                                                  spb_index < 3 ~ 2,
-                                                                  spb_index < 4 ~ 3,
-                                                                  spb_index <= 5 ~ 4)),
-                                  labels = c('Muy Bajo','Bajo','Medio', 'Alto'))
-attr(elsoc$spb_rec, which = 'label') <- 'Nivel de Sentido de Pertenencia al Barrio'
-
-#sjmisc::frq(elsoc$spb_index)
-sjmisc::frq(elsoc$spb_rec)
-```
-
-```{r Manipulación de variable X}
-#-----Construcción X: Experiencia de Habitar el Territorio
-
-##----sociabilidad
-elsoc$sociabilidad <- ((elsoc$amigable + elsoc$sociable + elsoc$cordial + elsoc$colaborador)/4)
-elsoc$sociabilidad <- set_label(x = elsoc$sociabilidad,label = "Socibilidad Barrial")
-
-##----sentimiento de seguridad 
-elsoc$sent_seguridad <- factor(car::recode(elsoc$sent_seguridad, "1:2=1;3=2;4:5=3"),
-                          labels = c("Experiencia de inseguridad","Ni seguro ni inseguro","Experiencia de seguridad"))                          
-attr(elsoc$sent_seguridad, which = 'label') <- 'Sentimiento de seguridad en el barrio'
-
-##----índice de "Satisfacción con la geografía de oportunidades del barrio"
-elsoc$satisf_gobarrio <- ((elsoc$conect + elsoc$prox_trabajo + elsoc$prox_col + elsoc$prox_com)/4)
-elsoc$satisf_gobarrio <- set_label(x = elsoc$satisf_gobarrio, label = "Satisfacción con la geografía de oportunidades del barrio")
-
-##----reputación barrial
-elsoc$repb <- factor(car::recode(elsoc$rep_barrial, "1:2=1;3=2;4:5=3"),
-                            labels = c("Estigmatizado","Ni Estigmatizado Ni Prestigioso", "Prestigioso"))
-attr(elsoc$repb, which = 'label') <- 'Reputación Barrial' 
-
-##----estilos de vida deseables
-elsoc <- mutate(elsoc,act_deseable = car::recode(elsoc$act_desagradables,"1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
-elsoc <- mutate(elsoc,res_deseable = car::recode(elsoc$res_desagradables, "1 = 5; 2 = 4; 3 = 3; 4 = 2; 5 = 1"))
-elsoc$est_vida_des <- ((elsoc$act_deseable + elsoc$res_deseable)/2)
-attr(elsoc$est_vida_des, which = 'label') <- 'Deseabilidad de Estilos de Vida' 
-
-##----tiempo residencia
-sjmisc::frq(elsoc$tiempo_barrio)
-elsoc$tiempo_barrio[which(elsoc$tiempo_barrio ==  "80")] <- 75
-elsoc$tiempo_barrio <- rescale(elsoc$tiempo_barrio, to = c(1,5))
-elsoc$tiempo_barrio <- set_label(x = elsoc$tiempo_barrio, label = "Tiempo de residencia en el barrio")
-```
-
-```{r Reputación Territorial}
-#calculamos una nueva variable que será el promedio de la variable "Reputación Barrial" agrupada por zona
-elsoc <- elsoc %>%
-  dplyr::group_by(zona) %>%
-  mutate(repb_zona = mean(rep_barrial))
-elsoc$repb_zona <- set_label(x = elsoc$repb_zona, label = "Reputación Zona")
-
-#calculamos una nueva variable que será el promedio de la variable "Reputación Barrial" agrupada por distrito
-elsoc <- elsoc %>%
-  dplyr::group_by(distrito) %>%
-  mutate(repb_dto = mean(rep_barrial))
-elsoc$repb_dto <- set_label(x = elsoc$repb_dto, label = "Reputación Distrito")
-```
-
-```{r Reescalamiento de variables Z por zona}
-#----Construcción Z1: Entorno Territorial ZONA
-
-##----Reescalamiento de variable nivel socioeconómico medido por escolaridad 
-sjmisc::frq(elsoc$nvl_esco)
-elsoc$nvl_esco <- rescale(elsoc$nvl_esco, to = c(1,5))
-elsoc$nvl_esco <- set_label(x = elsoc$nvl_esco, label = "Escolaridad Zona")
-
-##----Reescalamieno variable exposición a la heterogeneidad en escala 1 a 5
-elsoc$expo_hete <- rescale(elsoc$expo_hete, to = c(1,5))
-elsoc$expo_hete <- set_label(x = elsoc$expo_hete, label = "Heterogeneidad Zona")
-
-##----Puntaje de violencia en escala 1 a 5
-sjmisc::frq(elsoc$violencia)
-elsoc$violencia <- rescale(elsoc$violencia, to = c(1,5))
-elsoc$violencia <- set_label(x = elsoc$violencia, label = "Peligrosidad Zona")
-
-##----Reescalamiento variable de densidad para dejarla en escala de 0 a 1
-sjmisc::frq(elsoc$densidad)
-elsoc$densidad <- rescale(elsoc$densidad, to = c(1,5))
-elsoc$densidad <- set_label(x = elsoc$densidad, label = "Densidad Zona")
-
-##----Accesibilidad a servicios públicos en escala 1 a 5
-sjmisc::frq(elsoc$servicios_publicos)
-elsoc$servicios_publicos <- rescale(elsoc$servicios_publicos, to = c(1,5))
-elsoc$servicios_publicos <- set_label(x = elsoc$servicios_publicos, label = "Accesibilidad Zona")
-```
-
-```{r Reescalamiento de variables Z por Distrito}
-#----Construcción Z2: Entorno Territorial DISTRITO
-
-##----Reescalamiento de variable nivel socioeconómico medido por escolaridad
-elsoc$nvl_esco_dto <- rescale(elsoc$nvl_esco_dto, to = c(1,5))
-elsoc$nvl_esco_dto <- set_label(x = elsoc$nvl_esco_dto, label = "Escolaridad Distrito")
-
-##----Reescalamieno variable exposición a la heterogeneidad en escala 1 a 5
-elsoc$expo_hete_dto <- rescale(elsoc$expo_hete_dto, to = c(1,5))
-elsoc$expo_hete_dto <- set_label(x = elsoc$expo_hete_dto, label = "Heterogeneidad Distrito")
-
-##----Puntaje de violencia en escala 1 a 5
-elsoc$violencia_dto <- rescale(elsoc$violencia_dto, to = c(1,5))
-elsoc$violencia_dto <- set_label(x = elsoc$violencia_dto, label = "Peligrosidad Distrito")
-
-##----Reescalamiento desidad distrito en escala de 1 a 5
-elsoc$densidad_dto <- rescale(elsoc$densidad_dto, to = c(1,5))
-elsoc$densidad_dto <- set_label(x = elsoc$densidad_dto, label = "Densidad Distrito")
-
-##----Accesibilidad a servicios públicos en escala 1 a 5
-elsoc$servicios_publicos_dto <- rescale(elsoc$servicios_publicos_dto, to = c(1,5))
-elsoc$servicios_publicos_dto <- set_label(x = elsoc$servicios_publicos_dto, label = "Accesibilidad Distrito")
-```
-
-```{r Generación de base de datos para el análisis}
-##----creamos data frame con todos los datos necesarios para análisis multinivel
-elsoc_barrio_zon <- dplyr::select(elsoc,
-                              tiempo_barrio, #variables sociodemográficas
-                              comuna,zona,distrito, #identificadores geográficos
-                              spb_index,spb_rec, #sentido de pertenencia
-                              sociabilidad,conf_vecinos,sent_seguridad, #exp habitar social
-                              satisf_gobarrio, #exp habitar física 
-                              repb,est_vida_des, #exp habitar simbólica
-                              nvl_esco, expo_hete,violencia, #entorno territorial social
-                              servicios_publicos, densidad, #entorno territorial físico
-                              repb_zona) #entorno territorial simbólico
-
-#view(dfSummary(elsoc_barrio_zon, headings=FALSE)) 
-
-elsoc_barrio_zon$zona <- as.factor(elsoc_barrio_zon$zona)
-#calculamos una nueva variable que será el promedio de la variable "Sentido de Pertenencia" agrupada por zona
-elsoc_barrio_zon <- elsoc_barrio_zon %>%
-  group_by(zona) %>%
-  mutate(spb_zona = mean(spb_index))
-sjmisc::frq(elsoc_barrio_zon$spb_zona)
-
-#renombramos las comunas 
-elsoc_barrio_zon$comuna <- as.factor(elsoc_barrio_zon$comuna)
-elsoc_barrio_zon$comuna <- factor(elsoc_barrio_zon$comuna,labels = c("Santiago", "Cerrillos", "Cerro Navia", "Conchali", "El Bosque", "Estacion Central", "Huechuraba","Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipu", "Nnunnoa", "Pedro Aguirre Cerda", "Pennialolen", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquin", "San Miguel", "San Ramon", "Vitacura", "Puente Alto", "San Bernardo", "Padre Hurtado"))
-
-#Promedio por comuna
-elsoc_barrio_zon = elsoc_barrio_zon %>%  group_by(comuna) %>% mutate(spb_media_comunal = mean(spb_index))
-#Desviación estándarpor comuna
-elsoc_barrio_zon = elsoc_barrio_zon %>%  group_by(comuna) %>% mutate(spb_sd_comunal = sd(spb_index))
-#Tamaño por comuna
-elsoc_barrio_zon = elsoc_barrio_zon %>%  group_by(comuna) %>% mutate(spb_n_comunal = length(spb_index))
-
-#base con descriptivos por comuna 
-comunas <- elsoc_barrio_zon %>% group_by(comuna=to_label(comuna)) %>% summarise("Promedio Sentido de Pertenencia"=mean(spb_media_comunal), "SD Sentido de Pertenencia"=mean(spb_index), N=mean(spb_n_comunal)) #%>% print(n = nrow(.))
-#comunas <- as.data.frame(comunas)
-#View(comunas)
-
-#elsoc_barrio_zon[25:27] <- list(NULL) 
-
-#Filtrando las comunas con N bajo
-elsoc_barrio_zon <- dplyr::filter(elsoc_barrio_zon, comuna!="Vitacura") #vitacura N=1
-#elsoc_barrio_zon <- dplyr::filter(elsoc_barrio_zon, comuna!="Vitacura", comuna!="Lo Barnechea") #Lo Barnechea N=4
-getwd()
-#guardamos base de datos procesada con el fin de hacerla disponible para el análisis 
-save(elsoc_barrio_zon,file = "../1_input/data/procesada/elsoc_barrio_zon.RData")
-```
-
-```{r Generación de base de datos para el análisis distrito}
-##----creamos data frame con todos los datos necesarios para análisis multinivel
-elsoc_barrio_dto <- dplyr::select(elsoc,
-                              tiempo_barrio, #variables sociodemográficas
-                              comuna,zona,distrito, #identificadores geográficos
-                              spb_index,spb_rec, #sentido de pertenencia
-                              sociabilidad,conf_vecinos,sent_seguridad, #exp habitar social
-                              satisf_gobarrio, #exp habitar física 
-                              repb,est_vida_des, #exp habitar simbólica
-                              nvl_esco_dto, expo_hete_dto,violencia_dto, #entorno territorial social
-                              servicios_publicos_dto, densidad_dto, #entorno territorial físico
-                              repb_dto) #entorno territorial simbólico
-
-#view(dfSummary(elsoc_barrio, headings=FALSE)) 
-
-#calculamos una nueva variable que será el promedio de la variable "Sentido de Pertenencia" agrupada por zona
-elsoc_barrio_dto <- elsoc_barrio_dto %>%
-  group_by(distrito) %>%
-  mutate(spb_dto = mean(spb_index))
-
-
-#renombramos las comunas 
-elsoc_barrio_dto$comuna <- as.factor(elsoc_barrio_dto$comuna)
-elsoc_barrio_dto$comuna <- factor(elsoc_barrio_dto$comuna,labels = c("Santiago", "Cerrillos", "Cerro Navia", "Conchali", "El Bosque", "Estacion Central", "Huechuraba","Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipu", "Nnunnoa", "Pedro Aguirre Cerda", "Pennialolen", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquin", "San Miguel", "San Ramon", "Vitacura", "Puente Alto", "San Bernardo", "Padre Hurtado"))
-
-
-#Filtrando las comunas con N bajo
-elsoc_barrio_dto <- dplyr::filter(elsoc_barrio_dto, comuna!="Vitacura") #vitacura N=1
-#elsoc_barrio <- dplyr::filter(elsoc_barrio, comuna!="Vitacura", comuna!="Lo Barnechea") #Lo Barnechea N=4
-
-#guardamos base de datos procesada con el fin de hacerla disponible para el análisis 
-save(elsoc_barrio_dto,file = "../1_input/data/procesada/elsoc_barrio_dto.RData")
+save(elsoc_entorno, file = "../1_input/data/procesada/elsoc_entorno.RData")
 ```
 
 ```{r}
