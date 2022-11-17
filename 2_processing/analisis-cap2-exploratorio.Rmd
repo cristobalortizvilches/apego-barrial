@@ -35,13 +35,14 @@ boxplot_apbi <-
   ggplot(aes(x = reorder(comuna.x, nived_com), y = apbi)) +
   geom_boxplot() +
   coord_flip() +
-  theme(axis.text=element_text(size=5),
-        axis.title=element_text(size=10,face="bold")) + 
-  labs(x=" ", y="Promedio de apego barrial por comuna")
+  theme(axis.text=element_text(size =  14),
+        axis.title=element_text(size = 16, face="bold")) + 
+  labs(x=" ", y = "Promedio de apego barrial por comuna")
 
-ggsave(boxplot_apbi, filename= "../3_output/graficos/cap2/boxplot_apbi.png")
 
 boxplot_apbi
+
+ggsave(boxplot_apbi, filename= "../3_output/graficos/cap2/boxplot_apbi.png", width = 10, height = 6)
 ```
 
 ```{r Scatter SPB y Reputación por comuna}

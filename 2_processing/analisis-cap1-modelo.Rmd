@@ -152,49 +152,63 @@ coef_mod5 <-
     geom_hline(yintercept = 0, color = 'red' ) + 
     geom_linerange() + 
     geom_point() + 
-    ylab(label = NULL) +
+    ylab(label = "Tamaño de efecto sobre el apego barrial") +
     xlab(label = NULL) +
-    coord_flip() + 
-    theme_minimal()
-
-save_plot(filename = "../3_output/graficos/cap1/coef_plot.png",fig = coef_plot, width = 16, height = 10)
+    coord_flip() +
+    theme(axis.text=element_text(size =  12),
+          axis.title=element_text(size = 12, face = "bold"))
+coef_mod5
+save_plot(filename = "../3_output/graficos/cap1/coef_plot.png",fig = coef_mod5, width = 16, height = 10)
 ```
 
 ```{r linealidad}
-plot(bestmodel, 1)
+library(Hmisc)
+library(polycor)
+
+plot(mod5, 1)
+
+cor.test(elsoc$apbi, elsoc$time)[[3]] #relación lineal (rechaza H0)
+cor.test(elsoc$apbi, elsoc$soci)[[3]] #relación lineal (rechaza H0)
+cor.test(elsoc$apbi, elsoc$cnfi)[[3]] #relación lineal (rechaza H0)
+hetcor(elsoc$apbi, elsoc$segu) #relación lineal (rechaza H0)
+cor.test(elsoc$apbi, elsoc$acci)[[3]] #relación lineal (rechaza H0)
+cor.test(elsoc$apbi, elsoc$geni)[[3]] #relación lineal (rechaza H0)
+hetcor(elsoc$apbi, elsoc$repb) #relación lineal (rechaza H0)
+cor.test(elsoc$apbi, elsoc$desi)[[3]] #relación lineal (rechaza H0)
 
 #SE CUMPLE
+
 ```
 
 ```{r norm-resid}
-plot(bestmodel, 2)
+plot(mod5, 2)
 
-shapiro.test(bestmodel$residuals)
+shapiro.test(mod5$residuals)
 
 #SE CUMPLE
 ```
 
 ```{r homocedasticidad}
-plot(bestmodel, 3)
-
-car::ncvTest(bestmodel)
-
-lmtest::bptest(bestmodel)
+plot(mod5, 3)
+car::ncvTest(mod5)
+lmtest::bptest(mod5)
 #NO SE CUMPLE
+
+plot(mod4, 3)
+lmtest::bptest(mod4)
 ```
 
 ```{r multicolinealidad}
-car::vif(bestmodel)
-
+car::vif(mod5)
 #SE CUMPLE
 ```
 
 ```{r casos-influyentes}
-plot(bestmodel, 4)
-plot(bestmodel, 5)
+plot(mod5, 4)
+plot(mod5, 5)
 
 elsoc_sub <- elsoc %>% drop_na()
-elsoc_sub$cook <- cooks.distance(bestmodel)
+elsoc_sub$cook <- cooks.distance(mod5)
 which(elsoc_sub$cook > 1)
 
 #SE CUMPLE
