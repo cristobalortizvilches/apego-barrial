@@ -1,5 +1,5 @@
-# dse_spb
-# Desigualdad Socio-espacial y Sentido de Pertenencia al Barrio
+# dse-cob
+# Desigualdad socioespacial y cohesión barrial
 
 Para ver la página web del proyecto pincha [aquí](https://cristobalortizvilches.github.io/dse_spb/) 
 
